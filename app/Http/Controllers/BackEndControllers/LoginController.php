@@ -179,7 +179,7 @@ class LoginController extends Controller
     }
     public function send_otp_for_check_before(Request $request){
         $currentDateTime = Carbon::now();
-        $newDateTime = $currentDateTime->addSeconds(600);
+        $newDateTime = $currentDateTime->addSeconds(300);
 
         $employee_full_data = $this->loginService->GetPersonID($request->employee_number);
         $sms = new SmsVerifyHelper();
@@ -201,7 +201,7 @@ class LoginController extends Controller
     }
     public function send_email_for_check_before(Request $request){
         $currentDateTime = Carbon::now();
-        $newDateTime = $currentDateTime->addSeconds(600);
+        $newDateTime = $currentDateTime->addSeconds(300);
 
         $randomNumbers = array();
         for ($i = 0; $i < 5; $i++) {
@@ -237,7 +237,7 @@ class LoginController extends Controller
         try {
 
             $currentDateTime = Carbon::now();
-            $newDateTime = $currentDateTime->addSeconds(600);
+            $newDateTime = $currentDateTime->addSeconds(300);
 
             $employee_full_data = $this->loginService->GetPersonID($request->employee_number);
             $person_id = $employee_full_data->person_id;
@@ -488,11 +488,6 @@ class LoginController extends Controller
                 $service_type_emr="";
             }
 
-         /*  $customTempDir = "tempDir";
-           if (!file_exists(public_path($customTempDir))) {
-               mkdir(public_path($customTempDir), 0777, true);
-           }
-            $tempFile = tempnam($customTempDir, 'prefix');*/
 
             $template = new TemplateProcessor("vacation3.docx");
 
