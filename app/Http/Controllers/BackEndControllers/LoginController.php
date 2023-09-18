@@ -488,11 +488,12 @@ class LoginController extends Controller
                 $service_type_emr="";
             }
 
-           $customTempDir = "tempDir";
+         /*  $customTempDir = "tempDir";
            if (!file_exists(public_path($customTempDir))) {
                mkdir(public_path($customTempDir), 0777, true);
            }
-            $tempFile = tempnam($customTempDir, 'prefix');
+            $tempFile = tempnam($customTempDir, 'prefix');*/
+
             $template = new TemplateProcessor("vacation3.docx");
 
 
@@ -583,10 +584,6 @@ class LoginController extends Controller
             $pdf->save($file_output_pdf_path);
 // Assuming $record_approved->empno, $file_output_pdf_path, and $file_output_pdf are defined elsewhere
             $UploadDocumnetAcrchive->upload($record_approved->empno, $file_output_pdf_path, $file_output_pdf);
-
-// Clean up temporary files
-            unlink($tempFile);
-            unlink($outputFileName_local);
 
         }catch (\Exception $exception){
             return $exception->getMessage();
