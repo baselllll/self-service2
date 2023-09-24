@@ -24,6 +24,12 @@ class DetailsEmployeeService
     public  function GetLastRecordFromCustomNotifyWF($emp_number){
         return  $this->detailsRepository->GetLastRecordFromCustomNotifyWF($emp_number);
     }
+    public  function GetLastRecordApprovedFromCustomNotifyWF($emp_number){
+        return  $this->detailsRepository->GetLastRecordApprovedFromCustomNotifyWF($emp_number);
+    }
+    public  function GetLastRecordApprovedForTwoApprovalsFromCustomNotifyWF($emp_number){
+        return  $this->detailsRepository->GetLastRecordApprovedForTwoApprovalsFromCustomNotifyWF($emp_number);
+    }
     public  function getLastSameService($emp_number,$absence_type){
         return  $this->detailsRepository->getLastSameService($emp_number,$absence_type);
     }

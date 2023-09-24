@@ -158,64 +158,10 @@ WHERE     ppx.person_id = pp.parent_id
                       SET times_call = 1
                       WHERE transaction_id = $item->transaction_id");
             } catch (\Exception $exception) {
+
                 DB::rollBack();
             }
 
         }
-
-
-//        if (isset($item)){
-//            if ($item->times_call == "0"){
-//                if ($item->approval_status=="Pending Approval"){
-//                    $data =  $this->getPhone($item->mgr_person_id);
-//                    $phone_number = $data->phone_number;
-//                    $name = $data->full_name;
-//                    $emp_requested_number = $item->empno;
-//                    $transaction_id = $item->transaction_id;
-//                    $absence_type = $item->absence_type;
-//                    $this->sendsms($name,$emp_requested_number,$absence_type,$transaction_id,$phone_number);
-//                    try {
-//                        DB::statement("UPDATE xxajmi_notif
-//                      SET times_call = '1'
-//                      WHERE transaction_id = $item->transaction_id");
-//                    }catch (\Exception $exception){
-//                        DB::rollBack();
-//                    }
-//                }
-//                elseif ($item->approval_status=="Manager Approved"){
-//                    $data =  $this->getPhone($item->admin_mgr_person_id);
-//                    $phone_number = $data->phone_number;
-//                    $name = $data->full_name;
-//                    $emp_requested_number = $item->empno;
-//                    $transaction_id = $item->transaction_id;
-//                    $absence_type = $item->absence_type;
-//                    $this->sendsms($name,$emp_requested_number,$absence_type,$transaction_id,$phone_number);
-//                    try {
-//                        DB::statement("UPDATE xxajmi_notif
-//                      SET times_call = 1
-//                      WHERE transaction_id = $item->transaction_id");
-//                    }catch (\Exception $exception){
-//                        DB::rollBack();
-//                    }
-//                }
-//                elseif ($item->approval_status=="Admin Mgr Approved"){
-//                    $data =  $this->getPhone($item->top_mgmt_person_id);
-//                    $phone_number = $data->phone_number;
-//                    $name = $data->full_name;
-//                    $emp_requested_number = $item->empno;
-//                    $transaction_id = $item->transaction_id;
-//                    $absence_type = $item->absence_type;
-//                    $this->sendsms($name,$emp_requested_number,$absence_type,$transaction_id,$phone_number);
-//                    try {
-//                        DB::statement("UPDATE xxajmi_notif
-//                      SET times_call = 1
-//                      WHERE transaction_id = $item->transaction_id");
-//                    }catch (\Exception $exception){
-//                        DB::rollBack();
-//                    }
-//                }
-//
-//            }
-//        }
     }
 }

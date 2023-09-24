@@ -18,7 +18,7 @@ class MainOracleQueryRepo
     protected $sms_send;
     public function __construct()
     {
-        $this->conn = oci_connect('apps', 'apps', '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.15.227)(PORT=1571))(CONNECT_DATA=(SERVICE_NAME=sysdev)))');
+        $this->conn = oci_connect('selfservice', 'Ajmi##dba##Nas', '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.15.225)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=prod)))');
         $this->admin_mngSigniture = AppKeysProps::AdminManger()->value;
         $this->top_mngSigniture = AppKeysProps::TopManger()->value;
         $this->specialSpecifService = new SpecialSpecifService();
@@ -171,7 +171,24 @@ WHERE     ppa.analysis_criteria_id = pac.analysis_criteria_id
             ->orderByDesc('CREATION_DATE')
             ->first();
     }
-
+    public function GetLastRecordApprovedFromCustomNotifyWF($emp_number)
+    {
+        return  DB::table('xxajmi_notif')
+            ->where('EMPNO', '=', $emp_number)
+            ->where('no_of_approvals', '=', 3)
+            ->where('Approval_status', '=', "Admin Mgr Approved")
+            ->orderByDesc('CREATION_DATE')
+            ->first();
+    }
+    public function GetLastRecordApprovedForTwoApprovalsFromCustomNotifyWF($emp_number)
+    {
+        return DB::table('xxajmi_notif')
+            ->where('EMPNO', '=', $emp_number)
+            ->where('no_of_approvals', '=', 2)
+            ->where('Approval_status', '=', "Admin Mgr Approved")
+            ->orderByDesc('CREATION_DATE')
+            ->first();
+    }
     public function GetReplacmentDetailsSpecificDepartment($person_id)
     {
         /*
@@ -233,9 +250,9 @@ WHERE     ppx.person_id = ppa.person_id
             'occurrence' => $occurrence,
             'object_version_number' => 800,//static not changed
             'creation_date' => DB::raw('SYSDATE'),
-            'created_by' => $person_id,
+            'created_by' => 8001,
             'last_update_login' => -1,//static not changed
-            'last_updated_by' => $person_id,
+            'last_updated_by' => 8001,
             'last_update_date' => DB::raw('SYSDATE'),
             'comments' => $comments,
             'approval_status' => $status,
@@ -671,10 +688,10 @@ EOD;
             DB::table('xxajmi_ss_transactions')->insert([
                 'transaction_id' => $transaction_id_unique,
                 'creator_person_id' => $person_id,
-                'created_by' => $person_id,
+                'created_by' => 8001,
                 'creation_date' => DB::raw('SYSDATE'),
                 'last_update_date' => DB::raw('SYSDATE'),
-                'last_updated_by' => $person_id,
+                'last_updated_by' => 8001,
                 'information1' => $date_start,
                 'information2' => $date_end,
                 'information5' => $absence_type_id,
@@ -688,40 +705,6 @@ EOD;
                 'information14' => $difference_hours,
                 'information20' => 'absence',
             ]);
-
-//            DB::table('hr_api_transaction_steps')->insert([
-//                'transaction_step_id' => $transaction_id_unique,
-//                'transaction_id' => $transaction_id_unique,
-//                'api_name' => 'HR_PERSON_ABSENCE_SWI.PROCESS_API',
-//                'processing_order' => 0,
-//                'item_type' => 'HRSSA',
-//                'creator_person_id' => $person_id,
-//                'update_person_id' => $person_id,
-//                'object_version_number' => 1,
-//                'created_by' => 1984,
-//                'creation_date' => DB::raw('SYSDATE'),
-//                'last_update_date' => DB::raw('SYSDATE'),
-//                'last_updated_by' => 1984,
-//                'last_update_login' => 40235410,
-//                'object_type' => 'ENTITY',
-//                'object_name' => 'oracle.apps.per.schema.server.PerAbsenceAttendancesEO',
-//                'object_identifier' => $object_identifier,
-//                'pk1' => 1662336,
-//                'object_state' => 0,
-//                'information1' => $date_start,
-//                'information2' => $date_end,
-//                'information5' => $absence_type_id,
-//                'information6' => $absence_type,//Unpaid Leave || paid Leave
-//                'information8' => 3,
-//                'information9' => 'CONFIRMED',//Confirmed or Planned
-//                'information10' => $replaced_employee,
-//                'information11' => $comments,//Confirmed or Planned
-//                'information12' => $timePart_start_date,
-//                'information13' => $timePart_end_date,
-//                'information14' => $difference_hours,
-//                'information20' => 'absence',
-//                'information30' => 'ATT',
-//            ]);
             DB::commit();
            // lanuch the custom workflow
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
@@ -1009,7 +992,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
 
     public function CallNotoficationAfterChangeStaus($transaction_id, $status, $person_type)
     {
-        return DB::statement("BEGIN xxajmi_approve_reject_notif($transaction_id, '$status', '$person_type'); END;");
+        return DB::statement("BEGIN apps.xxajmi_approve_reject_notif($transaction_id, '$status', '$person_type'); END;");
     }
     public function CallToBackupAfterUpdate($transaction_id)
     {
@@ -1039,7 +1022,6 @@ where employee_number = '$employee_number' and reg_status ='Y'
 //                    $this->LAUNCH_WORKFLOW_ADMIN($transaction_id, $l_mgr_person_id);
                     //send notification
                     $this->CallNotoficationAfterChangeStaus($transaction_id, "Approved", "EMP_MGR");
-
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $manger_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->mgr_person_id);

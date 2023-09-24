@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Repository\EmployeeDetailsRepository;
 use App\Http\Repository\MainOracleQueryRepo;
 use App\Http\Requests\LoginRequest;
+use App\Http\Services\DetailsEmployeeService;
 use App\Http\Services\LoginService;
 use App\Http\Services\MangerLogicService;
 use Barryvdh\Snappy\Facades\SnappyPdf;
@@ -287,7 +288,6 @@ class LoginController extends Controller
 //                $mainRepo = new MainOracleQueryRepo();
                 $employee_full_data = $this->loginService->GetPersonID($request->emp_number);
 //                $employee_phone_number =  $mainRepo->GetPhoneEmpFromPersonId($employee_full_data->person_id)[0]->phone_number;
-//                dd($employee_phone_number);
 //                $request['phone_number']=$employee_phone_number;
                 $this->loginService->UpdateUserData($request->all());
                 Alert::success("SUCCESS", __('messages.update_success'));
@@ -446,7 +446,14 @@ class LoginController extends Controller
             $mainRepo = new MainOracleQueryRepo();
             $UploadDocumnetAcrchive = new UploadDocumnetAcrchive();
             $EmployeeDetailsRepository = new EmployeeDetailsRepository();
-            $record_approved =  \DB::table("xxajmi_notif")->where('transaction_id',$transition_id)->where('approval_status','Approved')->first();
+            $record_approved =  \DB::table("xxajmi_notif")->where('transaction_id',$transition_id)->where('no_of_approvals', '=', 3)->where('approval_status','Approved')->first();
+            $lastRecordApproved_Two_Approvals   =  \DB::table("xxajmi_notif")->where('transaction_id',$transition_id)->where('no_of_approvals', '=', 2)->where('Approval_status', '=', "Admin Mgr Approved")->first();
+            if (isset($record_approved)){
+                $record_approved = $record_approved;
+            }
+            if (isset($lastRecordApproved_Two_Approvals)){
+                $record_approved = $lastRecordApproved_Two_Approvals;
+            }
             $employee_data = $mainRepo->GetPersonID($record_approved->empno);
 
             $GetPersonNATIONALITY_Contract_hire = $mainRepo->GetPersonNATIONALITY($record_approved->empno);
@@ -459,7 +466,6 @@ class LoginController extends Controller
             }
             $GetPersonAvailableCompanyDate = $mainRepo->GetPersonAvailableCompanyDate($record_approved->empno);
             $employee_data_details = $mainRepo->GetEmployeeUsingFileNumber($record_approved->empno)[0];
-
             $employee_phone_number = $mainRepo->GetPhoneEmpFromPersonId($employee_data->person_id)[0]->phone_number;
             $manger_data = $mainRepo->GetEmolyeeDataFromPersonId($record_approved->mgr_person_id);
             $admin_mgr_data = $mainRepo->GetEmolyeeDataFromPersonId($record_approved->admin_mgr_person_id);

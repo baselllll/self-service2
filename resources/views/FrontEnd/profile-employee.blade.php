@@ -162,12 +162,13 @@
                                                                    class="btn btn-warning showAccutalsDetailsClick"
                                                                    data-toggle="modal"
                                                                    data-target="#showAccutalsDetails">
-                                                                   <i class="fa fa-bars fa-bounce fa-lg"></i>
+                                                                   <i class="fa fa-duotone fa-info"></i>
                                                                </button>
                                                            </a>
-
-
                                                        @endif
+                                                       <a href="{{route("get-details",['transaction_id'=>$item->transaction_id])}}">
+                                                           <button  type="button"><i class="fa fa-bars" aria-hidden="true" style="font-size: 25px;"></i></button>
+                                                       </a>
                                                    </td>
                                                @endif
                                            </tr>
@@ -233,10 +234,13 @@
                                                                     class="btn btn-warning showAccutalsDetailsClick"
                                                                     data-toggle="modal"
                                                                     data-target="#showAccutalsDetails">
-                                                                    <i class="fa fa-info-circle fa-bounce fa-lg"></i>
+                                                                    <i class="fa fa-duotone fa-info"></i>
                                                                 </button>
                                                             </a>
                                                         @endif
+                                                        <a href="{{route("get-details",['transaction_id'=>$item->transaction_id])}}">
+                                                            <button  type="button"><i class="fa fa-bars" aria-hidden="true" style="font-size: 25px;"></i></button>
+                                                        </a>
                                                     </td>
                                                 @endif
                                             </tr>
@@ -301,10 +305,13 @@
                                                                     class="btn btn-warning showAccutalsDetailsClick"
                                                                     data-toggle="modal"
                                                                     data-target="#showAccutalsDetails">
-                                                                    <i class="fa fa-info-circle fa-bounce fa-lg"></i>
+                                                                    <i class="fa fa-duotone fa-info"></i>
                                                                 </button>
                                                             </a>
                                                         @endif
+                                                        <a href="{{route("get-details",['transaction_id'=>$item->transaction_id])}}">
+                                                            <button  type="button"><i class="fa fa-bars" aria-hidden="true" style="font-size: 25px;"></i></button>
+                                                        </a>
                                                     </td>
                                                 @endif
                                             </tr>
@@ -350,7 +357,7 @@
                                                           </button>
                                                       </a>
                                                       <a href="{{route("get-details",['transaction_id'=>$item->transaction_id])}}">
-                                                          <button type="button"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                          <button  type="button"><i class="fa fa-bars" aria-hidden="true" style="font-size: 28px;"></i></button>
                                                       </a>
                                                   </td>
                                               @endif
@@ -392,7 +399,7 @@
                                                           </button>
                                                       </a>
                                                       <a href="{{route("get-details",['transaction_id'=>$item->transaction_id])}}">
-                                                          <button type="button"> <i class="fa fa-bars" aria-hidden="true"></i></button>
+                                                          <button type="button"> <i class="fa fa-bars" aria-hidden="true" style="font-size: 28px;"></i></button>
                                                       </a>
                                                   </td>
                                               @endif

@@ -79,7 +79,7 @@
         var $collapseButton = $(".toggle-button-annal");
         var authorizedUnpaidVisible = false;
         var rowsToShow = $(".toggleable-row[data-absence_type='Authorized Unpaid Leave']");
-        var annualLeavePending = $(".toggleable-row[data-absence_type='Annual Leave']").length > 0;
+        var annualLeavePending = $(".toggleable-row[data-absence_type='Annual Leave']").length > 1;
         console.log(annualLeavePending)
         if(annualLeavePending==false){
             rowsToShow.show()

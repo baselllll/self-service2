@@ -161,6 +161,24 @@ class ServiceDetailController extends Controller
             }
         }
         $lastRecord = $this->detailsEmployeeService->GetLastRecordFromCustomNotifyWF($employee->employee_number);
+        $lastRecordApproved = $this->detailsEmployeeService->GetLastRecordApprovedFromCustomNotifyWF($employee->employee_number);
+        $lastRecordApproved_Two_Approvals = $this->detailsEmployeeService->GetLastRecordApprovedForTwoApprovalsFromCustomNotifyWF($employee->employee_number);
+        if (isset($lastRecordApproved)){
+            if ($request->start_date <= $lastRecordApproved->absence_end_date && $request->start_date >= $lastRecordApproved->absence_start_date) {
+                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                return redirect()->to('profile-employee');
+            }
+        }
+        if (isset($lastRecordApproved_Two_Approvals)){
+            if ($request->start_date <= $lastRecordApproved_Two_Approvals->absence_end_date && $request->start_date >= $lastRecordApproved_Two_Approvals->absence_start_date) {
+                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                return redirect()->to('profile-employee');
+            }
+        }
+
+
+
+
         if(isset($lastRecord)){
             if (isset($lastRecordSameService[0])){
                 if($request->absence_type == $lastRecord->absence_type and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){

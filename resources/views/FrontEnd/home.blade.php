@@ -58,7 +58,6 @@
                             </tr>
                             </thead>
                             <tbody>
-
                             @foreach($absence_requests as $absence)
 
                                 @if($user_type == $adminManger or $user_type == $topManger )

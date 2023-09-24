@@ -95,35 +95,34 @@ class ProfileEmployeeController extends Controller
         }
         $searchTerm = 67;
         // check user have muslim or not to out service haji
-        if($full_data_user->per_information7 !== $this->muslimReligion->value or is_null($full_data_user->per_information7)){
-
-            foreach ($all_services as $key => $absence) {
-                if ($absence->absence_attendance_type_id == $searchTerm) {
-                    array_splice($all_services, $key, 1);
-                    break;
-                }
-            }
-        }else{
-
-            $keysToRemove = [];
-
-            foreach ($all_services as $key => $absence) {
-                if ($absence->absence_attendance_type_id == $searchTerm  and isset($absence->last_update_date)  ) {
-                   //add 5 year
-                    $lastUpdateDate = Carbon::parse($absence->last_update_date);
-                    $updatedDate = $lastUpdateDate->addYears(5);
-                    $updatedDateString = $updatedDate->format('Y-m-d H:i:s');
-                    if($updatedDateString >= Carbon::now()){
-                        $keysToRemove[] = $key;
-                    }
-
-                }
-            }
-            foreach ($keysToRemove as $key) {
-                unset($all_services[$key]);
-            }
-            $all_services = array_values($all_services);
-        }
+//        if($full_data_user->per_information7 !== $this->muslimReligion->value or is_null($full_data_user->per_information7)){
+//            foreach ($all_services as $key => $absence) {
+//                if ($absence->absence_attendance_type_id == $searchTerm) {
+//                    array_splice($all_services, $key, 1);
+//                    break;
+//                }
+//            }
+//        }else{
+//
+//            $keysToRemove = [];
+//
+//            foreach ($all_services as $key => $absence) {
+//                if ($absence->absence_attendance_type_id == $searchTerm  and isset($absence->last_update_date)  ) {
+//                   //add 5 year
+//                    $lastUpdateDate = Carbon::parse($absence->last_update_date);
+//                    $updatedDate = $lastUpdateDate->addYears(5);
+//                    $updatedDateString = $updatedDate->format('Y-m-d H:i:s');
+//                    if($updatedDateString >= Carbon::now()){
+//                        $keysToRemove[] = $key;
+//                    }
+//
+//                }
+//            }
+//            foreach ($keysToRemove as $key) {
+//                unset($all_services[$key]);
+//            }
+//            $all_services = array_values($all_services);
+//        }
 
         //eligibal annula
         $status = $this->loginService->checkElgibalityOfAnnul($employee->person_id)->next_vac_start_date;
@@ -179,13 +178,12 @@ class ProfileEmployeeController extends Controller
             $all_services = array_values($all_services);
         }
 
-
         // show services specific woman employee
         if ($full_data_user->sex =="F"){
 
         }else{
-            $omoma = 2067;
-            $death_idah = 2066;
+            $omoma = 2065;
+            $death_idah = 2064;
 
             $keysToRemove = [];
 
@@ -214,20 +212,17 @@ class ProfileEmployeeController extends Controller
             }
 
         }
+
         $last_requested_to_play_notify =  $requested_notification->first();
         $requested_notification = array_values($requested_notification->toArray());
         $filtered_notification = array_filter($requested_notification, function ($item) {
             return !(
-                    ($item->absence_type == "Annual Leave" && $item->approval_status == "Pending Approval" && $item->taswiath_status != 1) ||
+                    ($item->absence_type == "Annual Leave" && $item->approval_status == "Pending Approval" && $item->taswiath_status != 1) &&
                     ($item->absence_type == "Authorized Unpaid Leave" && $item->approval_status == "Pending Approval")
                 ) && $item->empno;
         });
-
-
-
-
-
         $requested_notification = array_values($filtered_notification);
+
         $toggle_unauthorized_annual=null;
         foreach ($requested_notification as  $item) {
             if (isset($item->absence_type) && $item->absence_type === "Authorized Unpaid Leave" && $item->approval_status == "Pending Approval" ) {

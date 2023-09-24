@@ -42,11 +42,11 @@ class SpecialSpecifService
             "67"=>'haji.png',
             "68"=>'marige.png',
             "70"=>'Sick Leave.jpg',
-            "2064"=>'Permission  Work.png',
-            "2063"=>'Personal Permission.jpg',
-            "2066"=>'death idah.jpg',
-            "2065"=>'death.jpg',
-            "2067"=>'omoma.jpg',
+            "2066"=>'Permission  Work.png',
+            "2068"=>'Personal Permission.jpg',
+            "2064"=>'death idah.jpg',
+            "2063"=>'death.jpg',
+            "2065"=>'omoma.jpg',
         ];
     }
 
