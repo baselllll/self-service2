@@ -69,14 +69,14 @@
                                     @php
                                         $formattedDate = isset($start_date_unauthorized) ? date('Y-m-d', strtotime($start_date_unauthorized)) : '';
                                     @endphp
-                                    <input required type="{{ trim($absence_attendance_type_id) !== '2066' && trim($absence_attendance_type_id) !== '2068' ? 'date' : 'datetime-local' }}" value="{{ $formattedDate }}" class="form-control" name="start_date" id="start_date" placeholder="Subject">
+                                    <input required type="{{ trim($absence_attendance_type_id) !== '2064' && trim($absence_attendance_type_id) !== '2063' ? 'date' : 'datetime-local' }}" value="{{ $formattedDate }}" class="form-control" name="start_date" id="start_date" placeholder="Subject">
                                     <label for="start_date">@lang('messages.Start Date')</label>
                                 </div>
 
 
                                 <br/>
                                 <div class="form-floating">
-                                    <input required type="{{ trim($absence_attendance_type_id) !== '2066' && trim($absence_attendance_type_id) !== '2068' ? 'date' : 'datetime-local' }}" class="form-control" name="end_date" id="end_date" placeholder="Subject">
+                                    <input required type="{{ trim($absence_attendance_type_id) !== '2064' && trim($absence_attendance_type_id) !== '2063' ? 'date' : 'datetime-local' }}" class="form-control" name="end_date" id="end_date" placeholder="Subject">
                                     <label for="start_date">@lang('messages.End Date')</label>
                                 </div>
                                 <br/>

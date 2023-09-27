@@ -38,6 +38,8 @@ class ProfileEmployeeController extends Controller
     public function index(Request $request){
 
         $user_type =  session()->get('user_type');
+        $super_visor_can_request =  session()->get('super_visor_can_request');
+
         $employee = session()->get('employee');
         $special_type_user_default = session()->get('special_type_user_default');
         $status_request = $request->status_request;
@@ -56,6 +58,9 @@ class ProfileEmployeeController extends Controller
                 $absence->replacement_person_id =  $this->loginService->GetEmolyeeDataFromPersonId($absence->replacement_person_id)->full_name;
             }
         }
+
+
+
 
         $updated_specail_services = [];
         foreach ($specail_services as $item){
@@ -126,6 +131,7 @@ class ProfileEmployeeController extends Controller
 
         //eligibal annula
         $status = $this->loginService->checkElgibalityOfAnnul($employee->person_id)->next_vac_start_date;
+
         if($status=="N"){
             $annual_leave = 62;
 

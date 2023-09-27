@@ -67,9 +67,7 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0" >
             @if(session()->has('employee'))
-                @if( session()->get("taswaya_emp")==true)
-                    <a style="font-weight: bold;text-decoration: underline"  href="{{route('taswaya')}}" class="nav-item nav-link">@lang('messages.taswaya')</a>
-                @endif
+
                 <a style="font-weight: bold;text-decoration: underline"  href="{{route('profile-employee')}}" class="nav-item nav-link">@lang('messages.EmpRequests')</a>
                 <a style="font-weight: bold;text-decoration: underline" href="{{route('home')}}" class="nav-item nav-link">@lang('messages.HOME')</a>
                 @if(session()->get('user_type')!=='top_mng')
@@ -85,7 +83,10 @@
                 @else
                     <a style="font-weight: bold;text-decoration: underline" href="{{route('delegation-history-employee')}}" class="nav-item nav-link">@lang('messages.Delegation')</a>
                 @endif
-
+                @if( session()->get("taswaya_emp")==true)
+                    <a style="font-weight: bold;text-decoration: underline"  href="{{route('taswaya')}}" class="nav-item nav-link">@lang('messages.taswaya')</a>
+                    <a style="font-weight: bold;text-decoration: underline"  href="{{route('clearance')}}" class="nav-item nav-link">@lang('messages.clearance')</a>
+                @endif
                 <a style="font-weight: bold;text-decoration: underline" href="{{route('help')}}" class="nav-item nav-link">@lang('messages.help')</a>
                 <a style="font-weight: bold;" href="{{route('logout')}}" class="btn btn-primary ">@lang('messages.logout')<i class="fa fa-arrow-right ms-3"></i></a>
 
@@ -96,24 +97,6 @@
         </div>
     </div>
     @include('sweetalert::alert')
-    {{--    <script>--}}
-    {{--        @if(isset($last_requested_to_play_notify) and $last_requested_to_play_notify->empno==session()->get('employee')->employee_number)--}}
-    {{--            console.log("{{$last_requested_to_play_notify->approval_status}}")--}}
-    {{--            @php--}}
-    {{--                $currentDate = \Carbon\Carbon::now();// Current timestamp--}}
-    {{--            @endphp--}}
-    {{--            console.log("{{$currentDate}}")--}}
-    {{--            @if(str_contains($last_requested_to_play_notify->approval_status, "Approved")|| $last_requested_to_play_notify->approval_status=="Admin Mgr Approved" || str_contains($last_requested_to_play_notify->approval_status, "Rejected"))--}}
-    {{--                console.log("{{$last_requested_to_play_notify->approval_status}}");--}}
-    {{--                console.log("{{$last_requested_to_play_notify->update_date}}");--}}
-    {{--                @if($last_requested_to_play_notify->creation_date <= $last_requested_to_play_notify->update_date)--}}
-    {{--                   var notificationSound = document.getElementById("notificationSound");--}}
-    {{--                   console.log(notificationSound)--}}
-    {{--                   notificationSound.play();--}}
-    {{--                @endif--}}
-    {{--        @endif--}}
-    {{--    @endif--}}
-    {{--    </script>--}}
 </nav>
 
 <!-- Navbar End -->

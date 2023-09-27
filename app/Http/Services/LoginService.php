@@ -113,6 +113,9 @@ class LoginService
     public function TopMangInterface($top_mgmt_person_id){
         return $this->mainOracleQueryRepo->TopMangInterface($top_mgmt_person_id);
     }
+    public function CheckSuperVisorToRequestService($emp_number){
+        return $this->mainOracleQueryRepo->CheckSuperVisorToRequestService($emp_number);
+    }
     public function EmployeeInterface($EMPNO){
         return $this->mainOracleQueryRepo->EmployeeInterface($EMPNO);
     }
@@ -185,6 +188,10 @@ class LoginService
     {
         return $this->detailsRepository->taswaya_status_change($transaction_id,$note,$type);
     }
+    public function getAnnualApprovedForClearance()
+    {
+        return $this->detailsRepository->getAnnualApprovedForClearance();
+    }
     public function delete_taswaya($transaction_id)
     {
         return $this->detailsRepository->delete_taswaya($transaction_id);
@@ -193,6 +200,7 @@ class LoginService
     {
         return $this->detailsRepository->checkElgibalityOfAnnul($person_id);
     }
+
 
 public function getRecordOfHRTransactionStep($transaction_id)
     {

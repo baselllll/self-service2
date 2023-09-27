@@ -16,6 +16,7 @@ return [
     // home page
 
     'ABSENCE'=>'الحضور والانصراف',
+    'clearance' => 'اخلاء طرف',
     'checkPhoneNumber'=>'يرجى التحقق من رقم هاتفك الصحيح',
     'taswaya'=>'قسم التسوية',
     'Accurals' => 'عدد الإجازات',
@@ -36,7 +37,8 @@ return [
     'Send_Code'=>'ارسل الكود',
     'Verification_Code'=>'تم الإرسال بنجاح ، تحقق من البريد من فضلك',
     'otp_btn'=>'ارسال الكود',
-    'leaveNotify'=>'الاشعارات',
+    'leaveNotify'=>'الطلبات المعلقة تحتاج إلى الموافقة',
+    'added_service_success_as_requested_manger'=>"تم إنشاء خدمة المدير بنجاح وإرسالها إلى المدير الإداري للموافقة عليها",
     'SerialNumber'=>'رقم تسلسل',
     'phone_number'=>'رقم التليفون',
     'Update'=>'تحديث',

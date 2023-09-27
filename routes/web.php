@@ -81,6 +81,7 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
         Route::get("get-employee-information",[LoginController::class,'GetEmployeeInformation'])->name('get-employee-information');
         // that to get the Requests and know tracking the requests and know the status
         Route::get('home',[HomeController::class,'index'])->name('home');
+        Route::get('clearance',[HomeController::class,'clearance'])->name('clearance');
         // that to get the tracking Requests using Transaction ID
         Route::get('get-details/{transaction_id}',[HomeController::class,'getDetails'])->name('get-details');
        //  that routes  show  the services available in system and also the Pending Requests for Manger and delegated person

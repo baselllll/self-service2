@@ -90,6 +90,10 @@ class LoginController extends Controller
                     request()->session()->save();
 
                     if(isset($manger)){
+                        $check_supervisor_requesdted = $this->loginService->CheckSuperVisorToRequestService($request->employee_number)->super_status;
+                        if ($check_supervisor_requesdted== "Y"){
+                            Session::put('super_visor_can_request',  true);
+                        }
                         if(in_array($employee->employee_number,$this->taswayaEmp->Employee_Avalabile())==true){
                             Session::put('taswaya_emp',  true);
                             request()->session()->save();
@@ -97,6 +101,10 @@ class LoginController extends Controller
                             Session::forget('taswaya_emp');
                         }
                         if (isset($admin_mgr)){
+                            $check_supervisor_requesdted = $this->loginService->CheckSuperVisorToRequestService($request->employee_number)->super_status;
+                            if ($check_supervisor_requesdted== "Y"){
+                                Session::put('super_visor_can_request',  true);
+                            }
                             $user_type = $this->user_type_admin_manger->value;
                             //that put because if same manger is admin_mng   ( yhaa -- emp(hr) ) same supervisor same admin_manager
                             //cause of same manger_person_id == admin_person_id

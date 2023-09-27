@@ -400,6 +400,8 @@
             if (response.sended == 1) {
                 var countdownTime = 120; // 4 minutes in seconds
                 var countdownInterval = setInterval(updateCountdown, 1000);
+                $('#otp_email').focus();
+                $('#otp_email').css('border-color', '#ff9900');
 
                 function updateCountdown() {
                     var minutes = Math.floor(countdownTime / 60);
@@ -437,6 +439,8 @@
                 $('#email_personnal_block').removeClass('d-none').addClass('d-block');
                 $('#block_phone_number').removeClass('d-none').addClass('d-block');
                 $('#email_personnal').val(email_employee_after_verified);
+                $('#phone_number_input').prop('readonly', true);
+                $('#email_personnal').prop('readonly', true);
                 $('#otpModal').modal('hide');
                 $('#EmailModal').modal('hide');
             }else{

@@ -8,6 +8,7 @@ use App\Helper\SpecialSpecifService;
 use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Support\Facades\DB;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MainOracleQueryRepo
 {
@@ -229,7 +230,7 @@ WHERE     ppx.person_id = ppa.person_id
     {
         $status = (array_key_exists('ATTRIBUTE12', $additional_data) && $additional_data['ATTRIBUTE12'] === 'N') ? 'Rejected' : 'Approved';
 
-        if ($absence_attendance_type_id == "2061" || $absence_attendance_type_id == "2062") {
+        if ($absence_attendance_type_id == "2066" || $absence_attendance_type_id == "2068") {
             $calculate_differnce_day = null;
         }else{
             $calculate_differnce_day = DB::raw("TO_DATE('$date_end') - TO_DATE('$date_start')+1");
@@ -671,18 +672,7 @@ EOD;
 
     public function InsertTransctionProcessWorkFlow($person_id, $employee_number, $date_start, $date_end, $absence_type, $absence_type_id, $comments, $replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours)
     {
-//        $transaction_id_unique = DB::select("select transaction_seq.NEXTVAL from dual")[0]->nextval;
-//        $newItemKey = $this->GetLastItemKey();
-//        $assignmentId = $this->GetAssignmentId($employee_number);
-//        $object_identifier = DB::table("hr_api_transaction_steps")->select("*")->orderByDesc('creation_date')->first()->object_identifier;
-//        $transaction_document = $this->generteXML($object_identifier, $person_id, $date_start, $date_end, $transaction_id_unique, $assignmentId->assignment_id, DB::raw('TRUNC(SYSDATE)'), $absence_type_id);
-//
         $transaction_id_unique = DB::select("select xxajmi_trxn_s.NEXTVAL from dual")[0]->nextval;
-        //$newItemKey = $this->GetLastItemKey();
-       // $assignmentId = $this->GetAssignmentId($employee_number);
-        //$object_identifier = DB::table("hr_api_transaction_steps")->select("*")->orderByDesc('creation_date')->first()->object_identifier;
-       // $transaction_document = $this->generteXML($object_identifier, $person_id, $date_start, $date_end, $transaction_id_unique, $assignmentId->assignment_id, DB::raw('TRUNC(SYSDATE)'), $absence_type_id);
-
         try {
             DB::beginTransaction();
             DB::table('xxajmi_ss_transactions')->insert([
@@ -706,8 +696,14 @@ EOD;
                 'information20' => 'absence',
             ]);
             DB::commit();
+
            // lanuch the custom workflow
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
+
+            $super_visor_can_request =  session()->get('super_visor_can_request');
+            if($super_visor_can_request==true){
+                $this->approvedMangerIfRequestedService($transaction_id_unique);
+            }
 
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -758,10 +754,6 @@ EOD;
     public function FireCustomWorkflowOfSSHR($transaction_id_unique)
     {
         return DB::statement("BEGIN XX_CUSTOM_PKG_MGR1.LAUNCH_WORKFLOW_MGR($transaction_id_unique); END;");
-//        $conn = oci_connect('apps', 'apps', '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.15.227)(PORT=1571))(CONNECT_DATA=(SERVICE_NAME=sysdev)))');
-//        $statement = oci_parse($conn, "BEGIN XX_CUSTOM_PKG_MGR1.LAUNCH_WORKFLOW_MGR($transaction_id_unique); END;");
-//        oci_execute($statement, OCI_DEFAULT);
-//        oci_close($conn);
     }
 
 
@@ -834,7 +826,7 @@ WHERE     ppx.current_employee_flag = 'Y'
             // Ajmi Managers View  only supervisor
             return  DB::table('xxajmi_mgr_v')
                 ->select('*')
-                ->where('person_id', '=', $mgr_person_id);
+                ->where('supvsr_person_id', '=', $mgr_person_id);
         }catch (\Exception $exception){
             return $exception->getMessage();
         }
@@ -916,6 +908,14 @@ where employee_number = '$employee_number' and reg_status ='Y'
             return  DB::table('xxajmi_3_level_approvers_v')
                 ->select('*')
                 ->where('person_id', '=', $top_mgmt_person_id);
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+    }
+    public function CheckSuperVisorToRequestService($emp_number)
+    {
+        try {
+            return  DB::select("select xxajmi_chk_cc_supvsr($emp_number) as super_status from  dual")[0];
         }catch (\Exception $exception){
             return $exception->getMessage();
         }
@@ -1424,5 +1424,37 @@ WHERE fifs.id_flex_num ='$flex_id'");
             return $exception->getMessage();
         }
 
+    }
+
+    public function CountHoursAvailablePermission(){
+        $differenceInHours=null;
+
+        $results = DB::table('xxajmi_notif')
+            ->where('absence_type', '=', 'Permission - Official Work')
+            ->where('approval_status', '=', 'Admin Mgr Approved')
+            ->get(['absence_start_date', 'absence_end_date']);
+
+        foreach ($results as $result) {
+            $startDateTime = \Carbon\Carbon::parse($result->absence_start_date);
+            $endDateTime = \Carbon\Carbon::parse($result->absence_end_date);
+            $differenceInHours = $startDateTime->diffInHours($endDateTime);
+        }
+
+    }
+    public function getAnnualApprovedForClearance(){
+       return DB::table('xxajmi_notif')
+            ->where('absence_type', '=', 'Annual Leave')
+            ->where('approval_status', '=', 'Approved')->get();
+    }
+    public function approvedMangerIfRequestedService($transaction_id){
+        try {
+            DB::statement("UPDATE xxajmi_notif
+                 SET approval_status = 'Manager Approved',
+                     mgr_approval_status ='Approved',
+                     mgr_action_date=SYSDATE
+               WHERE transaction_id = $transaction_id");
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
     }
 }
