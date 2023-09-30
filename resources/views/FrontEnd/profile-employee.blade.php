@@ -96,14 +96,13 @@
                             </thead>
                             <tbody style="color: black">
                             @foreach($requested_notification as $item)
-
                                 @php
                                     $conditions =   ($item->delegate_to_emp==session()->get('employee')->employee_number  and \Carbon\Carbon::now() >= $item->delegate_from_date and \Carbon\Carbon::now() <= $item->delegate_to_date);
                                 @endphp
                                 <tr style="background-color: #181d38">
                                     @if($item->no_of_approvals==3)
                                          @if((($item->approval_status==$Pend_approved_pending_req or $item->approval_status==str_contains($item->approval_status,'Delegated')) and $user_type==$manger_user_type) or ($item->mgr_person_id == $item->admin_mgr_person_id and  $special_type_user_default==$manger_user_type) or $conditions)
-                                           <tr data-approval_status="{{$item->approval_status}}" data-absence_type="{{$item->absence_type}}" class="toggleable-row" @if(isset($toggle_unauthorized_annual) and $toggle_unauthorized_annual==1 and $item->absence_type=="Authorized Unpaid Leave")
+                                             <tr data-approval_status="{{$item->approval_status}}" data-absence_type="{{$item->absence_type}}" class="toggleable-row" @if(isset($toggle_unauthorized_annual) and $toggle_unauthorized_annual==1 and $item->absence_type=="Authorized Unpaid Leave")
                                                    style="display: none"
                                            @endif>
                                                @if($item->absence_type=="Annual Leave")
@@ -196,7 +195,6 @@
                                                         <a href="#">
                                                             <button
                                                                 data-type_person="TopMgr"
-
                                                                 data-notify_confirm="{{$item->top_mgmt_notif_id}}"
                                                                 data-transaction_id="{{$item->transaction_id}}"
                                                                 type="button"

@@ -482,14 +482,7 @@ WHERE     ppx.person_id = ppa.person_id
     //supervior validation
     public function GetCountSupervisor($employee_number)
     {
-        return DB::select("select count(*) as count_data
-from hr.per_all_assignments_f paaf,hr.per_all_people_f ppf
-where sysdate between paaf.effective_start_date and paaf.effective_end_date
-and sysdate between ppf.effective_start_date and ppf.effective_end_date
-and ppf.person_id = paaf.person_id
-and ppf.employee_number ='$employee_number'
-and paaf.supervisor_id is not null
-");
+        return DB::select("select xxajmi_cc_assigned_supvsr($employee_number) as assigned_supvsr_status from dual")[0];
     }
 
 
@@ -701,8 +694,12 @@ EOD;
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
 
             $super_visor_can_request =  session()->get('super_visor_can_request');
+            $super_visor_can_request_admin_manger =  session()->get('super_visor_can_request_admin_manger');
             if($super_visor_can_request==true){
                 $this->approvedMangerIfRequestedService($transaction_id_unique);
+            }
+            if($super_visor_can_request_admin_manger==true){
+                $this->approvedAdminMangerIfRequestedService($transaction_id_unique);
             }
 
         } catch (\Exception $ex) {
@@ -1161,7 +1158,6 @@ where employee_number = '$employee_number' and reg_status ='Y'
 
                     $this->XjmRecordProcess($transaction_id, 'Y');
                     $this->sms_send->EditOnTemplate($transaction_id);
-
                     //send notification
                     $this->CallNotoficationAfterChangeStaus($transaction_id, "Approved", "TOP_MGMT");
 
@@ -1452,6 +1448,19 @@ WHERE fifs.id_flex_num ='$flex_id'");
                  SET approval_status = 'Manager Approved',
                      mgr_approval_status ='Approved',
                      mgr_action_date=SYSDATE
+               WHERE transaction_id = $transaction_id");
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+    }
+    public function approvedAdminMangerIfRequestedService($transaction_id){
+        try {
+            DB::statement("UPDATE xxajmi_notif
+                 SET approval_status = 'Admin Mgr Approved',
+                     mgr_approval_status ='Approved',
+                    mgr_action_date=SYSDATE,
+                      admin_mgr_action_date=SYSDATE,
+                     admin_mgr_approval_status ='Approved'  , update_date=SYSDATE
                WHERE transaction_id = $transaction_id");
         }catch (\Exception $exception){
             return $exception->getMessage();

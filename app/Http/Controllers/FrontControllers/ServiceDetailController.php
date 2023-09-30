@@ -182,6 +182,8 @@ class ServiceDetailController extends Controller
         }
 
 
+
+
         if(isset($lastRecord)){
             if (isset($lastRecordSameService[0])){
                 if($request->absence_type == $lastRecord->absence_type and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
@@ -218,16 +220,20 @@ class ServiceDetailController extends Controller
 
 
         }
-       //add validation here
+
+        //add validation here
         $absence_attendance_type_id =$request->absence_attendance_type_id;
         $absence_type =$request->absence_type;
         $employee_number =session()->get('employee')->employee_number;
         $person_id = $request->person_id;
+        $occurrence = $request->person_id;
         $comments = $request->comments;
         $replacement_employee_number = $request->replacement_employee_number;
+        $additional_data = $request->except(['_token','occurrence','start_date','end_date','absence_attendance_type_id','person_id','comments','manager_employee_number','attribute_category','date_notification','replacement_person_id','time_period','attribue1']);
         $replaced_employee = null;
         if(isset($replacement_employee_number)){
             $employee_replaced = $this->loginService->GetPersonID($replacement_employee_number);
+//            dd($employee_replaced);
             $replaced_employee = (isset($employee_replaced)) ? $employee_replaced->person_id:null;
         }
 
@@ -244,7 +250,6 @@ class ServiceDetailController extends Controller
                 $person_id,$employee_number,$request->start_date,$request->end_date,$absence_type,$absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours
             );
         }
-
 
          Alert::success("SUCCESS",__('messages.added_service_success'));
         return redirect('home');

@@ -38,7 +38,6 @@ class ProfileEmployeeController extends Controller
     public function index(Request $request){
 
         $user_type =  session()->get('user_type');
-        $super_visor_can_request =  session()->get('super_visor_can_request');
 
         $employee = session()->get('employee');
         $special_type_user_default = session()->get('special_type_user_default');
@@ -53,6 +52,7 @@ class ProfileEmployeeController extends Controller
         $specail_services = $this->loginService->GetALLDynamicformTemplate();
         $array_special = $this->specialSpecifhelper->SpecialService();
         $absence_requests= $this->loginService->GetAbsenceManagment($employee->person_id,$employee->employee_number);
+
         foreach ($absence_requests as $absence){
             if(isset($absence->replacement_person_id)){
                 $absence->replacement_person_id =  $this->loginService->GetEmolyeeDataFromPersonId($absence->replacement_person_id)->full_name;
@@ -235,7 +235,12 @@ class ProfileEmployeeController extends Controller
                 $toggle_unauthorized_annual = 1;
             }
         }
-         return view('frontend.profile-employee',compact('toggle_unauthorized_annual','special_type_user_default','last_requested_to_play_notify','requested_notification','status_request','user_type','absence_requests','employee','all_services','specail_services'));
+        $filtered_notifications = array_filter($requested_notification, function($item) use ($employee) {
+            return !($item->mgr_person_id == $employee->person_id && $employee->employee_number == $item->empno);
+        });
+
+        $requested_notification = array_values($filtered_notifications);
+        return view('frontend.profile-employee',compact('toggle_unauthorized_annual','special_type_user_default','last_requested_to_play_notify','requested_notification','status_request','user_type','absence_requests','employee','all_services','specail_services'));
     }
 
     public function servicesCategory(){

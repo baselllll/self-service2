@@ -26,13 +26,13 @@ class HomeController extends Controller
         $employee = session()->get('employee');
         $user_type =  session()->get('user_type');
         // check if employee not have supervisor show message and disabled newRequest (item)
-//        $is_user_supervisor= $this->loginService->GetCountSupervisor($employee->employee_number);
-//        if(isset($is_user_supervisor)){
-//            if ($is_user_supervisor[0]->count_data == 0){
-//                Session::put('employee_not_assign',  true);
-//                request()->session()->save();
-//            }
-//        }
+        $is_user_supervisor= $this->loginService->GetCountSupervisor($employee->employee_number);
+        if(isset($is_user_supervisor)){
+           if ($is_user_supervisor->assigned_supvsr_status != "Y"){
+                Session::put('employee_not_assign',  true);
+               request()->session()->save();
+            }
+        }
        if(isset($employee)){
            // get all requested services
            $absence_requests= $this->loginService->GetAbsenceManagment($employee->employee_number,$employee->person_id,$user_type);
@@ -52,7 +52,6 @@ class HomeController extends Controller
            }
            $last_requested_to_play_notify =  $requested_notification->first();
 
-//           $isFirstLogin = 1;
            return view('frontend.home',compact('user_type','last_requested_to_play_notify','absence_requests','requested_notification'));
        }else{
            return redirect('login');
