@@ -24,6 +24,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 // that api make user outside KSA allowed to use That websites using A middleware  to prevent that
 
+Route::get("send_test",function (){
+    $sms = new \App\Helper\SmsVerifyHelper();
+    return $sms->sendSMS('966573447923',"message");
+})->name('not_allowed');
+
 Route::get("run_request_sms_service",function (){
     \App\Jobs\SendSmsJob::dispatch();
 })->name('not_allowed');

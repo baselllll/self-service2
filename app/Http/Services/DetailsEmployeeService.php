@@ -41,9 +41,9 @@ class DetailsEmployeeService
     public function InsertSpecialSeviceTable($data){
          $this->detailsRepository->InsertSpecialSeviceTable($data);
     }
-    public  function InsertDataInAbsenceTable($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours){
+    public  function InsertDataInAbsenceTable($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName=null){
         try {
-              $this->detailsRepository->InsertTransctionProcessWorkFlow($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours);
+              $this->detailsRepository->InsertTransctionProcessWorkFlow($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName);
         }catch (\Exception $exception){
             return $exception->getMessage();
         }

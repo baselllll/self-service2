@@ -46,7 +46,7 @@
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
 
 
-                    <form action="{{route('add-service-detail')}}" method="post">
+                    <form action="{{route('add-service-detail')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
                             <div class="col-12">
@@ -115,6 +115,15 @@
                                         @endforeach
                                     </select>
                                <label for="start_date">@lang('messages.Replacement Employee Number')</label>
+                                </div>
+                                <br/>
+
+
+                                <div class="form-floating">
+                                    <div id="file_uploaded" class="form-floating">
+                                        <input type="file" name="upload_files"   class="form-control">
+                                        <label for="upload_files">@lang('messages.AttachFile')</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row g-2">

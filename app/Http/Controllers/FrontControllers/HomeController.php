@@ -66,7 +66,19 @@ class HomeController extends Controller
         }else{
             $requested_notification =  $this->mangerLogicService->GetnotificationOfEmployee($employee->employee_number);
         }
-        return view('frontend.employee-details-transacation',compact('requested_notification','custom_details_employee'));
+
+        $directory = public_path('documents');
+
+        $files = glob("$directory/*");
+        $filePath=null;
+        foreach ($files as $file) {
+            $fileName = pathinfo($file, PATHINFO_FILENAME);
+            if ($fileName === $employee->employee_number) {
+                $filePath = str_replace(public_path(), '', $file);
+                break;
+            }
+        }
+        return view('frontend.employee-details-transacation',compact('requested_notification','filePath','custom_details_employee'));
     }
     public function help(){
         $employee = session()->get('employee');

@@ -663,7 +663,7 @@ ORDER BY column_seq_num");
 EOD;
     }
 
-    public function InsertTransctionProcessWorkFlow($person_id, $employee_number, $date_start, $date_end, $absence_type, $absence_type_id, $comments, $replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours)
+    public function InsertTransctionProcessWorkFlow($person_id, $employee_number, $date_start, $date_end, $absence_type, $absence_type_id, $comments, $replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName=null)
     {
         $transaction_id_unique = DB::select("select xxajmi_trxn_s.NEXTVAL from dual")[0]->nextval;
         try {
@@ -693,7 +693,11 @@ EOD;
            // lanuch the custom workflow
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
 
-
+            if (isset($fileName)){
+                DB::statement("UPDATE xxajmi_notif
+                 SET document_name='$fileName'
+               WHERE transaction_id = $transaction_id_unique");
+            }
 
             $super_visor_can_request =  session()->get('super_visor_can_request');
             $super_visor_can_request_admin_manger =  session()->get('super_visor_can_request_admin_manger');

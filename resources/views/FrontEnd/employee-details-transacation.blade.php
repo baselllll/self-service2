@@ -132,7 +132,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2"></div>
+            <div class="col-2">
+                @if(isset($filePath) and isset($custom_details_employee->document_name))
+                  <a href="{{$filePath.'/'.$custom_details_employee->document_name}}" target="_blank">
+                      <div class="card">
+                          <i class="fas fa-file-pdf fa-icon" id="pdfIcon"></i>
+                          <h4>Click</h4>
+                      </div>
+                  </a>
+                @endif
+            </div>
         </div>
 
     </div>

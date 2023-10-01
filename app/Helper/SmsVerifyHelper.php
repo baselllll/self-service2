@@ -19,7 +19,7 @@ class SmsVerifyHelper
         // Check if the message contains Arabic characters
         return preg_match($pattern, $message) === 1;
     }
-    function sendSMS($phone_number, $message,$otp=null)
+    function sendSMS2($phone_number, $message,$otp=null)
     {
 
         if ($this->isArabicMessage($message)){
@@ -52,6 +52,54 @@ class SmsVerifyHelper
             return false;
         }
     }
+
+    //maro integration
+
+
+    function sendSMS($phone_number, $message, $otp = null)
+    {
+        if ($this->isArabicMessage($message)) {
+            $message = "رمز التحقق من الحساب هو لتسجيل الدخول إلى منصة العجمي للخدمة الذاتية لا تشاركها : " . $otp;
+        } else {
+            if (isset($otp)) {
+                $message = "$message : $otp";
+            }
+        }
+
+        $base_url = "https://mora-sa.com/api/v1/sendsms";
+        $api_key = "7ff998d245c5adf59d6dd8113e2c1bc3ac65c212";
+        $username = "ALajmiCo";
+        $sender = "AlajmiCo";
+
+        $numbers = "&numbers=" . rawurlencode($phone_number);
+        $api_key_param = "api_key=" . $api_key;
+        $username_param = "username=" . $username;
+        $message_param = "message=" . rawurlencode($message);
+        $sender_param = "sender=" . $sender;
+
+        $url = $base_url . "?" . $api_key_param . "&" . $username_param . "&" . $message_param . "&" . $sender_param . $numbers;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-type: application/json',
+        ]);
+        $response = curl_exec($ch);
+        if ($response === false) {
+            $error = curl_error($ch);
+            echo "cURL Error: " . $error;
+        }
+        curl_close($ch);
+
+        // need to check if status in sended
+
+    }
+
+
+
 
     public function filterPhoneNumber($phone_number){
         $cur_zero_number = null;

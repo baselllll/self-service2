@@ -158,6 +158,7 @@ class ServiceDetailController extends Controller
         }
 
         $employee = session()->get('employee');
+       $employeeForFile = $employee->employee_number;
         $lastRecordSameService = $this->detailsEmployeeService->getLastSameService($employee->employee_number,$request->absence_type);
         if (isset($lastRecordSameService[0])){
             if ($lastRecordSameService[0]->absence_end_date > Carbon::now()->format('Y-m-d') and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
@@ -217,10 +218,19 @@ class ServiceDetailController extends Controller
                     return redirect()->to('profile-employee');
                 }
             }
-
-
         }
-
+        $fileName=null;
+        if ($request->hasFile('upload_files')) {
+            $file = $request->file("upload_files");
+            if ($employeeForFile) {
+                $folderPath = "documents/$employeeForFile";
+                $fileName = "$employeeForFile"."_".$file->getClientOriginalName();
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath, 0755, true);
+                }
+                $file->move(public_path().'/'.$folderPath, $fileName);
+            }
+        }
         //add validation here
         $absence_attendance_type_id =$request->absence_attendance_type_id;
         $absence_type =$request->absence_type;
@@ -233,25 +243,28 @@ class ServiceDetailController extends Controller
         $replaced_employee = null;
         if(isset($replacement_employee_number)){
             $employee_replaced = $this->loginService->GetPersonID($replacement_employee_number);
-//            dd($employee_replaced);
             $replaced_employee = (isset($employee_replaced)) ? $employee_replaced->person_id:null;
         }
 
         if($absence_type and isset( $request->unauthorized_absence_name)){
             $this->detailsEmployeeService->InsertDataInAbsenceTable(
-                $person_id,$employee_number,$request->start_date_unathorized,$request->end_date_unathorized,$request->unauthorized_absence_name,$request->unauthorized_absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours
+                $person_id,$employee_number,$request->start_date_unathorized,$request->end_date_unathorized,$request->unauthorized_absence_name,$request->unauthorized_absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours,$fileName
             );
 
             $this->detailsEmployeeService->InsertDataInAbsenceTable(
-                $person_id,$employee_number,$request->start_date,$request->end_date,$absence_type,$absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours
+                $person_id,$employee_number,$request->start_date,$request->end_date,$absence_type,$absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours,$fileName
             );
         }else{
             $this->detailsEmployeeService->InsertDataInAbsenceTable(
-                $person_id,$employee_number,$request->start_date,$request->end_date,$absence_type,$absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours
+                $person_id,$employee_number,$request->start_date,$request->end_date,$absence_type,$absence_attendance_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$request->difference_hours,$fileName
             );
         }
 
-         Alert::success("SUCCESS",__('messages.added_service_success'));
+
+
+
+
+        Alert::success("SUCCESS",__('messages.added_service_success'));
         return redirect('home');
     }
     public function AddSpecialServiceDetail(Request $request){
