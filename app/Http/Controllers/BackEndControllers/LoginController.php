@@ -103,6 +103,9 @@ class LoginController extends Controller
                             $user_type = $this->user_type_admin_manger->value;
                             //that put because if same manger is admin_mng   ( yhaa -- emp(hr) ) same supervisor same admin_manager
                             //cause of same manger_person_id == admin_person_id
+                            if ($check_supervisor_requesdted== "Y"){
+                                Session::put('super_visor_can_request_admin_manger',  true);
+                            }
                             $special_type_user_default =  $this->user_type_manger->value;
                             Session::put('user_type',  $user_type);
                             Session::put('delegated_type',  "delegated");
@@ -345,11 +348,8 @@ class LoginController extends Controller
 
 
     public function logout(){
-        session()->forget('employee');
-        session()->forget('employee_data');
-        session()->forget('employee_not_assign');
-        session()->forget('user_type');
-        return redirect()->route('login-page');
+          session()->flush();
+          return redirect()->route('login-page');
     }
 
     public function SendOtp(Request $request){

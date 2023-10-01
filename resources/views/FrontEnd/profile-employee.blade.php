@@ -101,7 +101,7 @@
                                 @endphp
                                 <tr style="background-color: #181d38">
                                     @if($item->no_of_approvals==3)
-                                         @if((($item->approval_status==$Pend_approved_pending_req or $item->approval_status==str_contains($item->approval_status,'Delegated')) and $user_type==$manger_user_type) or ($item->mgr_person_id == $item->admin_mgr_person_id and  $special_type_user_default==$manger_user_type) or $conditions)
+                                         @if((($item->approval_status==$Pend_approved_pending_req or $item->approval_status==str_contains($item->approval_status,'Delegated')) and $user_type==$manger_user_type) or ($item->mgr_person_id == $item->admin_mgr_person_id and  $special_type_user_default==$manger_user_type and $item->admin_mgr_approval_status ==$pending_status ) or $conditions)
                                              <tr data-approval_status="{{$item->approval_status}}" data-absence_type="{{$item->absence_type}}" class="toggleable-row" @if(isset($toggle_unauthorized_annual) and $toggle_unauthorized_annual==1 and $item->absence_type=="Authorized Unpaid Leave")
                                                    style="display: none"
                                            @endif>

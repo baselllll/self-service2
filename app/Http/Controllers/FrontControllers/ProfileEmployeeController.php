@@ -222,10 +222,7 @@ class ProfileEmployeeController extends Controller
         $last_requested_to_play_notify =  $requested_notification->first();
         $requested_notification = array_values($requested_notification->toArray());
         $filtered_notification = array_filter($requested_notification, function ($item) {
-            return !(
-                    ($item->absence_type == "Annual Leave" && $item->approval_status == "Pending Approval" && $item->taswiath_status != 1) &&
-                    ($item->absence_type == "Authorized Unpaid Leave" && $item->approval_status == "Pending Approval")
-                ) && $item->empno;
+            return !($item->absence_type == "Annual Leave" && $item->approval_status == "Pending Approval" && $item->taswiath_status != 1) && $item->empno;
         });
         $requested_notification = array_values($filtered_notification);
 

@@ -142,12 +142,10 @@
             $('#modal-end-date').text(end_date);
             $('#modal-accurals-no').text( accurals_no);
 
-            if (taswiath_status == 1) {
+            if (taswiath_status === "1") {
                 $('#modal-taswiath_status').text("@lang('messages.taswiath_message_approve')");
-            } else if (taswiath_status == 0) {
+            } else if (taswiath_status == "0") {
                 $('#modal-taswiath_status').text("@lang('messages.taswiath_message_reject')");
-            } else if (taswiath_status === "") {
-                $('#modal-taswiath_status').text("");
             }
 
 

@@ -85,9 +85,14 @@
                                                     <a href="{{route("get-details",['transaction_id'=>$absence->transaction_id])}}">
                                                         <button type="button"><i class="fa fa-bars" aria-hidden="true"></i></button>
                                                     </a>
-                                                    @if(str_contains($absence->approval_status,"Approved"))
+                                                    @if($absence->no_of_approvals== 2 and $absence->approval_status=="Admin Mgr Approved")
+                                                    @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Approved")
+                                                    @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Admin Mgr Approved" and $absence->empno==session()->get("employee")->employee_number)
+                                                        <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
+                                                            <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                        </a>
                                                     @elseif(str_contains($absence->approval_status,"Rejected"))
-                                                    @else
+                                                    @elseif($absence->approval_status==$Pend_approved_pending_req)
                                                         <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
                                                             <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                         </a>
@@ -118,9 +123,14 @@
                                                     <a href="{{route("get-details",['transaction_id'=>$absence->transaction_id])}}">
                                                         <button type="button"><i class="fa fa-bars" aria-hidden="true"></i></button>
                                                     </a>
-                                                    @if(str_contains($absence->approval_status,"Approved"))
+                                                    @if($absence->no_of_approvals== 2 and $absence->approval_status=="Admin Mgr Approved")
+                                                    @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Approved")
                                                     @elseif(str_contains($absence->approval_status,"Rejected"))
-                                                    @else
+                                                    @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Admin Mgr Approved" and $absence->empno==session()->get("employee")->employee_number)
+                                                        <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
+                                                            <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                        </a>
+                                                    @elseif($absence->approval_status==$Pend_approved_pending_req)
                                                         <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
                                                             <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                         </a>
@@ -152,9 +162,15 @@
                                                 <a href="{{route("get-details",['transaction_id'=>$absence->transaction_id])}}">
                                                     <button type="button"><i class="fa fa-bars" aria-hidden="true"></i></button>
                                                 </a>
-                                                @if(str_contains($absence->approval_status,"Approved"))
+                                                @if($absence->no_of_approvals== 2 and $absence->approval_status=="Admin Mgr Approved")
+                                                @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Approved")
                                                 @elseif(str_contains($absence->approval_status,"Rejected"))
-                                                @else
+                                                @elseif($absence->no_of_approvals==3 and $absence->approval_status=="Admin Mgr Approved" and $absence->empno==session()->get("employee")->employee_number)
+                                                    <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
+                                                        <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    </a>
+
+                                                @elseif($absence->approval_status==$Pend_approved_pending_req)
                                                     <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
                                                         <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                     </a>
@@ -186,7 +202,7 @@
                                                 </a>
                                                 @if(str_contains($absence->approval_status,"Approved"))
                                                 @elseif(str_contains($absence->approval_status,"Rejected"))
-                                                @else
+                                                @elseif($absence->approval_status==$Pend_approved_pending_req)
                                                     <a href="{{route("delete-service",['transaction_id'=>$absence->transaction_id])}}">
                                                         <button style="color: red" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                     </a>

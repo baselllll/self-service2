@@ -693,6 +693,8 @@ EOD;
            // lanuch the custom workflow
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
 
+
+
             $super_visor_can_request =  session()->get('super_visor_can_request');
             $super_visor_can_request_admin_manger =  session()->get('super_visor_can_request_admin_manger');
             if($super_visor_can_request==true){
@@ -1022,11 +1024,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $manger_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->mgr_person_id);
-                    $manager_name = $manger_data->full_name;
+                    $manager_name = explode(' ',$manger_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$manager_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1056,11 +1058,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->admin_mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $admin_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->admin_mgr_person_id);
-                    $admin_name = $admin_data->full_name;
+                    $admin_name = explode(' ',$admin_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$admin_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
 
 
@@ -1095,11 +1097,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $manger_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->mgr_person_id);
-                    $manager_name = $manger_data->full_name;
+                    $manager_name = explode(' ',$manger_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$manager_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1129,11 +1131,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->admin_mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $admin_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->admin_mgr_person_id);
-                    $admin_name = $admin_data->full_name;
+                    $admin_name = explode(' ',$admin_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$admin_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1165,11 +1167,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->top_mgmt_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $top_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->top_mgmt_person_id);
-                    $top_name = $top_data->full_name;
+                    $top_name = explode(' ',$top_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$top_name you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$top_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1209,11 +1211,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $manger_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->mgr_person_id);
-                    $manager_name = $manger_data->full_name;
+                    $manager_name = explode(' ',$manger_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$manager_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1241,11 +1243,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->admin_mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $admin_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->admin_mgr_person_id);
-                    $admin_name = $admin_data->full_name;
+                    $admin_name = explode(' ',$admin_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$admin_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1274,11 +1276,11 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->top_mgmt_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $top_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->top_mgmt_person_id);
-                    $top_name = $top_data->full_name;
+                    $top_name = explode(' ',$top_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$top_name you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear Mr.$top_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1399,12 +1401,20 @@ WHERE fifs.id_flex_num ='$flex_id'");
     public function taswaya_status_change($transaction_id,$note,$type){
         try {
             if ($type=="approve"){
-                return  DB::statement("UPDATE xxajmi_notif
-                 SET taswiath_status =1 , taswiath_note  = '$note'
+             DB::statement("UPDATE xxajmi_notif
+                 SET taswiath_status =1 , taswiath_note  = '$note',
+                     approval_status = 'Admin Mgr Approved',
+                     mgr_approval_status ='Approved',
+                    mgr_action_date=SYSDATE,
+                      admin_mgr_action_date=SYSDATE,
+                     admin_mgr_approval_status ='Approved'  , update_date=SYSDATE
                WHERE transaction_id = $transaction_id");
+
             }elseif ($type=="reject"){
-                return  DB::statement("UPDATE xxajmi_notif
-                 SET taswiath_status =0 , taswiath_note  = '$note'
+                 DB::statement("UPDATE xxajmi_notif
+                 SET taswiath_status =0 , taswiath_note  = '$note' ,
+                       approval_status = 'Rejected',
+                     mgr_approval_status='Rejected' , admin_mgr_approval_status='Rejected'
                WHERE transaction_id = $transaction_id");
             }
         }catch (\Exception $exception){

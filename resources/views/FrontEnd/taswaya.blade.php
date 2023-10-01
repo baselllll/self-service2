@@ -92,7 +92,7 @@
                                                           data-start_date="{{$item->absence_start_date}}"
                                                           data-end_date="{{$item->absence_end_date}}"
                                                           data-accurals_no="{{$number_accural}}"
-                                                          data-taswiath_status="{{$item->taswiath_status}}"
+                                                          data-taswiath_status="{{ $item->taswiath_status == null ? '' : $item->taswiath_status }}"
                                                           data-taswiath_note="{{$item->taswiath_note}}"
                                                           type="button"
                                                           class="btn btn-warning showAccutalsDetailsClick"
