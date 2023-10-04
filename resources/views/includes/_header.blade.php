@@ -3,7 +3,7 @@
     <!-- Favicon -->
     <link rel="icon" href="{{asset("img/ajmi.png")}}" type="image/png">
     <title>Self Service SSHR</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, orientation=landscape">
     <meta content="sshr" name="keywords">
     <meta content="sshr" name="description">
     @laravelPWA

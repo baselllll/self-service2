@@ -234,7 +234,11 @@
     <script>
         setTimeout(function() {
             document.getElementById('spinner').style.display = 'none'; // Hide the spinner
-            window.location.href = "/public/index.php/profile-employee";
+             @if(env('APP_URL')=="http://192.168.203.64")
+                 window.location.href = "/profile-employee";
+             @else
+                 window.location.href = "/public/index.php/profile-employee";
+             @endif
         }, 500); // 500 milliseconds = 0.5 seconds
     </script>
 @endif

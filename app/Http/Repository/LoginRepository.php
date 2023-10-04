@@ -32,11 +32,19 @@ class LoginRepository extends MainOracleQueryRepo
 
     }
 
-    public function SendOtpService($otp,$person_id,$ip,$employee_number){
+    public function SendOtpService($otp,$person_id,$ip,$employee_number,$employee=null){
         $currentDateTime = Carbon::now();
         $flag_check_phone_success=null;
         $flag_check_email_success=null;
-        $newDateTime = $currentDateTime->addSeconds(125);
+        $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
+
+        if ($employee->attribute4 !== $ip and $employee->attribute4 !=null and $employee->attribute8 !=null){
+            return "device_is_opend";
+        }else{
+            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+                 SET  attribute8='1'
+                 WHERE person_id = $person_id");
+        }
 
         $result_data = $this->xxajmi_emp_reg_or_not($employee_number);
         if ($result_data->status_req=="0"){
@@ -65,9 +73,7 @@ class LoginRepository extends MainOracleQueryRepo
                                 if (strlen($cur_zero_number) == 12) {
                                     $result = $this->smsVerifyHelper->sendSMS(
                                         $cur_zero_number,
-                                        trans('messages.OtpSms_Message_before') . " $otp " .
-                                        trans('messages.OtpSms_Message_after'),
-                                        $otp
+                                        trans('messages.OtpSms_Message_before') . " $otp " . trans('messages.OtpSms_Message_after')
                                     );
                                 }
                             }

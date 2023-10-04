@@ -78,11 +78,11 @@
 
                         </div>
                         <div class="col-4">
-                            <span>@lang("messages.Requested To"):</span><span>{{$custom_details_employee->approver}}</span><br/>
-                            <span>@lang("messages.Requested By"):</span><span>{{$custom_details_employee->requestor}}</span><br/>
+                            <span>@lang("messages.Requested To"):</span><span>{{explode(' ',$custom_details_employee->approver)[0]}}</span><br/>
+                            <span>@lang("messages.Requested By"):</span><span>{{explode(' ',$custom_details_employee->requestor)[0]}}</span><br/>
                         </div>
                         <div class="col-4">
-                            <span>@lang("messages.Replacement Number"):</span><span>({{$custom_details_employee->replacement_no}} - {{$custom_details_employee->replacement_name}})</span><br/>
+                            <span>@lang("messages.Replacement Number"):</span><span>({{$custom_details_employee->replacement_no}} - {{explode(' ',$custom_details_employee->replacement_name)[0]}})</span><br/>
                         </div>
                     </div>
                 </div>
@@ -135,9 +135,9 @@
             <div class="col-2">
                 @if(isset($filePath) and isset($custom_details_employee->document_name))
                   <a href="{{$filePath.'/'.$custom_details_employee->document_name}}" target="_blank">
-                      <div class="card">
+                      <div class="card_file">
                           <i class="fas fa-file-pdf fa-icon" id="pdfIcon"></i>
-                          <h4>Click</h4>
+                          <h4></h4>
                       </div>
                   </a>
                 @endif
@@ -149,6 +149,31 @@
 
 
 @include('includes._footer')
+<script>
+    console.log("https://sshr.alajmi.com.sa/public/index.php/get-details/{{$custom_details_employee->transaction_id}}")
+    if (window.innerWidth <= 800 && window.location.href === "http://192.168.203.64/get-details/{{$custom_details_employee->transaction_id}}") {
+        document.body.style.transform = 'rotate(90deg)';
+        document.body.style.transformOrigin = 'left';
+        document.body.style.width = '97vh';
+        document.body.style.height = '263vw';
+        document.body.style.marginLeft = '541px';
+        document.body.style.marginTop = '-506px';
+        // Get the element with the class "navbar"
+        var navbarElement = document.querySelector('.navbar');
+
+        // Add CSS styles to make it fixed
+        navbarElement.style.position = 'fixed';
+        navbarElement.style.top = '22px';
+        navbarElement.style.left = '0';
+        navbarElement.style.width = '100%';
+
+        var metaViewport = document.createElement('meta');
+        metaViewport.name = 'viewport';
+        metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(metaViewport);
+    }
+
+</script>
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({

@@ -78,8 +78,8 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-12">
-                        <table id="tablerow_structure" class="table table-striped bg-dark" style="width:100%">
+                    <div class="col-12" style="overflow: scroll;">
+                        <table id="tablerow_structure" class="table table-striped bg-dark" >
                             <thead style="background:#1dafbd;color: white">
                             <tr>
                                 <th></th>

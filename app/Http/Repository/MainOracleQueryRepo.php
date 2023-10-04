@@ -1032,7 +1032,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $manager_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1066,7 +1066,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $admin_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
 
 
@@ -1105,7 +1105,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $manager_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1139,7 +1139,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $admin_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1175,7 +1175,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$top_name[0] you Approved Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $top_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1219,7 +1219,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$manager_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $manager_name[0] you reject Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1251,7 +1251,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$admin_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $admin_name[0] you Reject Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1284,7 +1284,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear Mr.$top_name[0] you Rejected Request from Employee File Number ($emp_requested_number) with Transaction Id ($transaction_id) of Service($absence_type) ";
+                    $message = "Dear $top_name[0] you  reject ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1478,6 +1478,31 @@ WHERE fifs.id_flex_num ='$flex_id'");
                WHERE transaction_id = $transaction_id");
         }catch (\Exception $exception){
             return $exception->getMessage();
+        }
+    }
+
+    public function updateOnPerPeople($person_id){
+        try {
+            $newDateTime = Carbon::now();
+            $formattedDateTime = $newDateTime->format('Y-m-d H:i:s');
+            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+                 SET  ATTRIBUTE3 ='$formattedDateTime'
+                 WHERE PERSON_ID = '$person_id'");
+        }catch (\Exception $exception){
+            DB::rollBack();
+        }
+    }
+    public function updateOnPerPeopleIp($person_id){
+        try {
+//            $newDateTime = Carbon::now()->addSeconds(270);
+            $newDateTime = Carbon::now();
+            $formattedDateTime = $newDateTime->format('Y-m-d H:i:s');
+            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+                 SET   ATTRIBUTE3 ='$formattedDateTime',
+                      ATTRIBUTE4 = null
+                 WHERE PERSON_ID = '$person_id'");
+        }catch (\Exception $exception){
+            DB::rollBack();
         }
     }
 }

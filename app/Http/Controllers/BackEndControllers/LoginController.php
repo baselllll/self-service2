@@ -74,7 +74,7 @@ class LoginController extends Controller
             //get the user Ip to check that user send otp from your device or what
             $current_ip = $this->loginService->getUserIpAddr();
             // check otp that sent to employee expire or not and same device (ip)
-            if(isset($employee_full_data->attribute2) and  $employee_full_data->attribute2 == $request->verification_code and $employee_full_data->attribute3 > Carbon::now() and  $employee_full_data->attribute4 == $current_ip){
+            if(isset($employee_full_data->attribute2) and  $employee_full_data->attribute2 == $request->verification_code and $employee_full_data->attribute3 > Carbon::now() and  ($employee_full_data->attribute4 == $current_ip or $employee_full_data->attribute4 ==null)){
                 if(isset($employee)){
                     // $out_modal_information  that to detect show information for user login first
 
@@ -192,7 +192,7 @@ class LoginController extends Controller
     }
     public function send_otp_for_check_before(Request $request){
         $currentDateTime = Carbon::now();
-        $newDateTime = $currentDateTime->addSeconds(300);
+        $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
 
         $employee_full_data = $this->loginService->GetPersonID($request->employee_number);
         $sms = new SmsVerifyHelper();
@@ -214,7 +214,7 @@ class LoginController extends Controller
     }
     public function send_email_for_check_before(Request $request){
         $currentDateTime = Carbon::now();
-        $newDateTime = $currentDateTime->addSeconds(300);
+        $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
 
         $randomNumbers = array();
         for ($i = 0; $i < 5; $i++) {
@@ -250,7 +250,7 @@ class LoginController extends Controller
         try {
 
             $currentDateTime = Carbon::now();
-            $newDateTime = $currentDateTime->addSeconds(300);
+            $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
 
             $employee_full_data = $this->loginService->GetPersonID($request->employee_number);
             $person_id = $employee_full_data->person_id;
@@ -348,7 +348,11 @@ class LoginController extends Controller
 
 
     public function logout(){
+        $employee = session()->get('employee');
+          $this->loginService->updateOnPerPeopleIp($employee->person_id);
           session()->flush();
+          session()->invalidate();
+
           return redirect()->route('login-page');
     }
 
@@ -368,9 +372,14 @@ class LoginController extends Controller
                 $randomNumbers[] = rand(1, 9); // Generates a random number between 1 and 100
             }
             $otp = $randomNumbers;
-            $result = $this->loginService->SendOtpService($otp,$person_id,$employee_number);
+            $result = $this->loginService->SendOtpService($otp,$person_id,$employee_number,$employee);
             //more validation emp have phone or email or existEmp
-            if ($result == 'success_sent_email') {
+            if ($result == 'device_is_opend') {
+                return response()->json([
+                    'results' => __('messages.device_is_opend')
+                ]);
+            }
+            if ($result == 'device_is_opend') {
                 return response()->json([
                     'results' => __('messages.success_sent_email')
                 ]);

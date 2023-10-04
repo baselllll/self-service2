@@ -22,7 +22,6 @@ class HomeController extends Controller
     }
 
     public function index(){
-
         $employee = session()->get('employee');
         $user_type =  session()->get('user_type');
         // check if employee not have supervisor show message and disabled newRequest (item)
@@ -66,15 +65,18 @@ class HomeController extends Controller
         }else{
             $requested_notification =  $this->mangerLogicService->GetnotificationOfEmployee($employee->employee_number);
         }
-
         $directory = public_path('documents');
 
         $files = glob("$directory/*");
         $filePath=null;
         foreach ($files as $file) {
             $fileName = pathinfo($file, PATHINFO_FILENAME);
-            if ($fileName === $employee->employee_number) {
-                $filePath = str_replace(public_path(), '', $file);
+            if ($fileName === $requested_notification[0]->empno) {
+                $empno = $requested_notification[0]->empno;
+                $segments = explode('/', $file);
+                $segments[1] = $empno;
+                $newUrl = implode('/', $segments);
+                $filePath = str_replace(public_path(), '', $newUrl);
                 break;
             }
         }

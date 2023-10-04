@@ -60,8 +60,6 @@ input[type="checkbox"]:checked + .checkbox-label::after {
     color: red; /* Adjust this value to set the color of the wrong icon when checked */
 }
 
-/* Add this CSS to your stylesheet to position the badge above the bell icon */
-
 
 
 .fw-medium {
@@ -159,6 +157,8 @@ input[type="checkbox"]:checked + .checkbox-label::after {
     color: var(--primary);
 }
 
+
+
 @media (max-width: 991.98px) {
     .navbar-light .navbar-nav .nav-link  {
         margin-right: 0;
@@ -182,9 +182,10 @@ input[type="checkbox"]:checked + .checkbox-label::after {
 }
 
 .navbar-light.sticky-top {
-    top: -100px;
     transition: .5s;
 }
+
+
 
 @media (min-width: 992px) {
     .navbar .nav-item .dropdown-menu {
@@ -194,6 +195,7 @@ input[type="checkbox"]:checked + .checkbox-label::after {
         visibility: hidden;
         transition: .5s;
     }
+
 
     .navbar .dropdown-menu.fade-down {
         top: 100%;
@@ -931,21 +933,23 @@ input[type="checkbox"]:checked + .checkbox-label::after {
 .toggle-button-annal i {
     font-size: 16px;
 }
-
-#tracking_container{
-    background: #dfe4e9;
-    height: 186px;
-    width: 919px;
-    padding: 33px 3px;
-    margin: 41px 130px;
-    box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
-    -webkit-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
-    -o-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 11px;
+@media (min-width: 700px) {
+    #tracking_container{
+        background: #dfe4e9;
+        height: 250px;
+        width: 919px;
+        padding: 33px 3px;
+        margin: 41px 130px;
+        box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -moz-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -o-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        border-radius: 20px;
+        -moz-border-radius: 20px;
+        -webkit-border-radius: 11px;
+    }
 }
+
 
 .nav-link{
     text-transform: capitalize;
@@ -969,15 +973,13 @@ input[type="checkbox"]:checked + .checkbox-label::after {
     pointer-events: none; /* Disable interactions */
     opacity: 0.6; /* Apply a faded appearance */
 }
-.card {
-    border: 1px solid #ccc;
+.card_file {
     border-radius: 8px;
-    padding: 18px;
+    padding: 5px;
     text-align: center;
-    max-width: 102px;
-    height: 100px;
+    max-width: 100px;
+    height: 82px;
     margin: 0 auto;
-    background-color: #f9f9f9;
 
 }
 
@@ -985,5 +987,77 @@ input[type="checkbox"]:checked + .checkbox-label::after {
     font-size: 48px;
     color: #007bff;
     cursor: pointer;
+}
+
+#footer_ajmi
+{
+    margin-top: 244px; padding-top: 1rem !important;
+}
+
+@media (min-width: 0px) and (max-width: 844px)  {
+    #tracking_container {
+        background: #dfe4e9;
+        height: 250px;
+        width: 919px;
+        padding: 33px 3px;
+        margin: 45px -26px;
+        box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -moz-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        -o-box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
+        border-radius: 20px;
+        -moz-border-radius: 20px;
+        -webkit-border-radius: 11px;
+    }
+    #design_nav {
+        width: 388px;
+        display: flex;
+        justify-content: center;
+    }
+    #em_requested_tracking {
+        position: absolute;
+        top: -19px;
+        left: 32px;
+    }
+    #footer_ajmi {
+        margin-top: 331px;
+        padding-top: 1rem !important;
+        visibility: visible;
+        animation-delay: 0.1s;
+        animation-name: fadeIn;
+    }
+
+    #mgr_requested_tracking {
+        position: absolute;
+        top: -21px;
+        left: 36px;
+
+    }
+    #admin_requested_tracking {
+        position: absolute;
+        top: -21px;
+        left: 10px;
+    }
+    #top_requested_tracking {
+        position: absolute;
+        top: -21px;
+        left: 1px;
+    }
+    #em_requested_tracking_approval_2{
+        position: absolute;
+        top: -22px;
+        left: 53px;
+    }
+    #mgr_requested_tracking_approval_2 {
+        position: absolute;
+        top: -21px;
+        left: 55px;
+    }
+    #admin_requested_tracking_approval_2 {
+        position: absolute;
+        top: -21px;
+        left: 29px;
+    }
+
 }
 

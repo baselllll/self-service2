@@ -22,6 +22,7 @@ class SmsVerifyHelper
     function sendSMS2($phone_number, $message,$otp=null)
     {
 
+
         if ($this->isArabicMessage($message)){
             $message = "رمز التحقق  من الحساب هو لتسجيل الدخول إلى منصة العجمي للخدمة الذاتية لا تشاركها :  ".$otp;
         }else{
@@ -46,11 +47,6 @@ class SmsVerifyHelper
 
         $response = curl_exec($ch);
         curl_close($ch);
-        if ($response) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     //maro integration
@@ -88,14 +84,19 @@ class SmsVerifyHelper
             'Content-type: application/json',
         ]);
         $response = curl_exec($ch);
+
         if ($response === false) {
-            $error = curl_error($ch);
-            echo "cURL Error: " . $error;
+            $this->sendSMS2($phone_number,$message,$otp);
+        } else {
+            $responseData = json_decode($response, true);
+            if (isset($responseData['data']['message'])){
+                if ($responseData['data']['message'] === "تم استلام الارقام بنجاح") {
+                }else{
+                    $this->sendSMS2($phone_number,$message,$otp);
+                }
+            }
         }
         curl_close($ch);
-
-        // need to check if status in sended
-
     }
 
 

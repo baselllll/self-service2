@@ -1,5 +1,5 @@
 <!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5  wow fadeIn"  data-wow-delay="0.1s" style="margin-top: 244px; padding-top: 1rem !important;">
+<div id="footer_ajmi" class="container-fluid bg-dark text-light footer pt-5  wow fadeIn"  data-wow-delay="0.1s">
     <div class="container">
         <div class="">
             <div class="row">

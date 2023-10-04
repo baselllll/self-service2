@@ -75,7 +75,7 @@
 
                                 <div class="row">
                                     <div class="col-2"></div>
-                                    <div class="col-8 mb-3" style="margin-top: -13px;text-decoration: underline;font-size: 16px;font-weight: bold;">
+                                    <div class="col-8 mb-3" style="margin-top: -24px;text-decoration: underline;font-size: 14px;font-weight: bold;">
                                         <a href="{{route("update-user-view")}}" style="    color: black;" target="_blank">@lang("messages.register_data")</a>
                                     </div>
                                     <div class="col-2"></div>

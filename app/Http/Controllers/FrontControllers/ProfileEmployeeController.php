@@ -37,10 +37,12 @@ class ProfileEmployeeController extends Controller
 
     public function index(Request $request){
 
+
         $user_type =  session()->get('user_type');
 
         $employee = session()->get('employee');
         $special_type_user_default = session()->get('special_type_user_default');
+        $this->loginService->updateOnPerPeople($employee->person_id);
         $status_request = $request->status_request;
         if(!isset($employee)){
             $login_service = App::make(LoginController::class);

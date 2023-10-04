@@ -1,6 +1,6 @@
 <!-- Navbar Start -->
 
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0 " id="design_nav">
     <div class="d-flex justify-content-between">
         <a href="{{ route('setLocale', ['locale' => 'ar']) }}"><span class="fi fi-sa"></span></a> &nbsp &nbsp
         <a href="{{ route('setLocale', ['locale' => 'en']) }}"><span class="fi fi-us"></span></a>
@@ -33,7 +33,7 @@
                         @if(isset($requested_notification))
                             @foreach($requested_notification as $item)
                                 @if($item->empno==session()->get('employee')->employee_number)
-                                    <a href="#" class="dropdown-item">
+                                    <a target="_blank" href="#" class="dropdown-item">
                                         <i class="fas fa-comment-dots"></i>
                                         @if($item->approval_status=="Manager Approved")
                                             <span style="font-weight: bold; text-decoration: underline" >Manager Approved</span>

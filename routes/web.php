@@ -26,7 +26,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 Route::get("send_test",function (){
     $sms = new \App\Helper\SmsVerifyHelper();
-    return $sms->sendSMS('966573447923',"message");
+    return $sms->sendSMS('966573447923',"wewe");
 })->name('not_allowed');
 
 Route::get("run_request_sms_service",function (){

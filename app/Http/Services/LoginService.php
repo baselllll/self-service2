@@ -45,11 +45,11 @@ class LoginService
             $ipaddress = 'UNKNOWN';
         return $ipaddress;
     }
-    public function SendOtpService($otp,$person_id,$employee_number)
+        public function SendOtpService($otp,$person_id,$employee_number,$employee=null)
     {
         $otp = implode($otp);
         $ip = $this->getUserIpAddr();
-        return $this->loginRepo->SendOtpService($otp,$person_id,$ip,$employee_number);
+        return $this->loginRepo->SendOtpService($otp,$person_id,$ip,$employee_number,$employee);
     }
     public function countLoginTimes($person_id,$times)
     {
@@ -228,5 +228,13 @@ public function getRecordOfHRTransactionStep($transaction_id)
     public function GetPeriodTime($service_type_id){
 
         return $this->detailsRepository->GetPeriodTime($service_type_id);
+    }
+    public function updateOnPerPeople($person_id){
+
+         $this->detailsRepository->updateOnPerPeople($person_id);
+    }
+    public function updateOnPerPeopleIp($person_id){
+
+         $this->detailsRepository->updateOnPerPeopleIp($person_id);
     }
 }
