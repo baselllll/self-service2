@@ -1,6 +1,6 @@
 <!-- Navbar Start -->
 
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0 " id="design_nav">
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0"  id="design_nav">
     <div class="d-flex justify-content-between">
         <a href="{{ route('setLocale', ['locale' => 'ar']) }}"><span class="fi fi-sa"></span></a> &nbsp &nbsp
         <a href="{{ route('setLocale', ['locale' => 'en']) }}"><span class="fi fi-us"></span></a>
@@ -61,7 +61,7 @@
 
     @if(session()->has('employee'))
         <a style="font-weight: bold;color: red;font-size: 15px;text-decoration: underline;" href="{{route('get-employee-information')}}" class="nav-item nav-link">{{session()->get('employee_data')->employee_number}}</a>
-        <a style="font-weight: bold;color: red; font-size: 15px;text-decoration: underline;"  href="{{route('get-employee-information')}}" class="nav-item nav-link ">{{logicTranslate(session()->get('employee_data')->employee_name)}}</a>
+        <a style="font-weight: bold;color: red; font-size: 15px;text-decoration: underline;"  href="{{route('get-employee-information')}}" class="nav-item nav-link ">{{logicTranslate(explode(' ',session()->get('employee_data')->employee_name)[0])}}</a>
     @endif
 
     <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -88,7 +88,7 @@
                     <a style="font-weight: bold;text-decoration: underline"  href="{{route('clearance')}}" class="nav-item nav-link">@lang('messages.clearance')</a>
                 @endif
                 <a style="font-weight: bold;text-decoration: underline" href="{{route('help')}}" class="nav-item nav-link">@lang('messages.help')</a>
-                <a style="font-weight: bold;" href="{{route('logout')}}" class="btn btn-primary ">@lang('messages.logout')<i class="fa fa-arrow-right ms-3"></i></a>
+                <a style="font-weight: bold;" href="{{route('logout')}}" class="btn btn-primary" id="logout_btn">@lang('messages.logout')<i class="fa fa-arrow-right ms-3"></i></a>
 
 
             @else

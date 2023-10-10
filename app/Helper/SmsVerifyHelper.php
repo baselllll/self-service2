@@ -55,7 +55,7 @@ class SmsVerifyHelper
     function sendSMS($phone_number, $message, $otp = null)
     {
         if ($this->isArabicMessage($message)) {
-            $message = "رمز التحقق من الحساب هو لتسجيل الدخول إلى منصة العجمي للخدمة الذاتية لا تشاركها : " . $otp;
+            $message = " رمز التحقق : $otp للدخول للخدمة الذاتية ";
         } else {
             if (isset($otp)) {
                 $message = "$message : $otp";

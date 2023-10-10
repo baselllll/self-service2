@@ -379,6 +379,11 @@ class LoginController extends Controller
                     'results' => __('messages.device_is_opend')
                 ]);
             }
+            if ($result == 'exceed_login_time') {
+                return response()->json([
+                    'results' => __('messages.exceed_login_time')
+                ]);
+            }
             if ($result == 'device_is_opend') {
                 return response()->json([
                     'results' => __('messages.success_sent_email')
@@ -451,10 +456,25 @@ class LoginController extends Controller
         $encryptedData = $request->data_decrypted;
         if(isset($encryptedData) and  $encryptedData === "kajska656sasnjiujiasdsw58565asmnhwuemxsa32"){
             $reg_users = $this->loginService->reg_users();
+            $tracking_users = $this->loginService->tracking_users();
+            foreach ($tracking_users as &$item) {
+                $get_users_from_userReq = $this->loginService->get_users_from_userReq($item->empno);
+                $item->phone  = $get_users_from_userReq->mobile_no;
+                $item->email_address  = $get_users_from_userReq->email_address;
+                $item->mgr_emp_number = $this->loginService->CheckUsingPersonId($item->mgr_person_id);
+                $item->admin_emp_number = $this->loginService->CheckUsingPersonId($item->admin_mgr_person_id);
+                $item->top_emp_number = $this->loginService->CheckUsingPersonId($item->top_mgmt_person_id);
+
+            }
             $non_reg_users= $this->loginService->non_reg_users();
+            $activeSession= $this->loginService->activeSession();
+            foreach ($activeSession as &$newItem){
+                $main_repo = new MainOracleQueryRepo();
+                $newItem->full_name = $main_repo->GetEmployeeUsingFileNumber($newItem->employee_number)[0]->employee_name;
+            }
             $count_register = $this->loginService->count_register_user()->no_user;
             $count_not_register =$this->loginService->count_not_register_user()->no_user;
-            return view('frontend.report-register-user',compact('reg_users','non_reg_users','count_register','count_not_register'));
+            return view('frontend.report-register-user',compact('reg_users','activeSession','tracking_users','non_reg_users','count_register','count_not_register'));
         }else{
             return view('frontend.NotAllowedLocation');
         }
@@ -606,6 +626,20 @@ class LoginController extends Controller
 
         }catch (\Exception $exception){
             return $exception->getMessage();
+        }
+    }
+
+    public function closeDifferentLogin(Request $request){
+        try {
+            $emp = $request->emp_number;
+            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+                 SET  attribute8=null,
+                     attribute4=null
+                 WHERE EMPLOYEE_NUMBER = '$emp'");
+            return response()->json(['results'=>"success closed all logined devices"]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return response()->json(['results'=>"failed"]);
         }
     }
 }

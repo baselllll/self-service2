@@ -151,26 +151,30 @@
 @include('includes._footer')
 <script>
     console.log("https://sshr.alajmi.com.sa/public/index.php/get-details/{{$custom_details_employee->transaction_id}}")
-    if (window.innerWidth <= 800 && window.location.href === "http://192.168.203.64/get-details/{{$custom_details_employee->transaction_id}}") {
-        document.body.style.transform = 'rotate(90deg)';
-        document.body.style.transformOrigin = 'left';
-        document.body.style.width = '97vh';
-        document.body.style.height = '263vw';
-        document.body.style.marginLeft = '541px';
-        document.body.style.marginTop = '-506px';
-        // Get the element with the class "navbar"
-        var navbarElement = document.querySelector('.navbar');
+    if (window.innerWidth <= 800 && window.location.href === "https://sshr.alajmi.com.sa/public/index.php/get-details/{{$custom_details_employee->transaction_id}}") {
+      alert("@lang('messages.rotate_screen')");
 
-        // Add CSS styles to make it fixed
-        navbarElement.style.position = 'fixed';
-        navbarElement.style.top = '22px';
-        navbarElement.style.left = '0';
-        navbarElement.style.width = '100%';
+        // if(confirmation){
+        //     // document.body.style.transform = 'rotate(90deg)';
+        //     // document.body.style.transformOrigin = 'left';
+        //     // document.body.style.width = '97vh';
+        //     // document.body.style.height = '263vw';
+        //     // document.body.style.marginLeft = '541px';
+        //     // document.body.style.marginTop = '-506px';
+        //     // var navbarElement = document.querySelector('.navbar');
+        //     //
+        //     // // Add CSS styles to make it fixed
+        //     // navbarElement.style.position = 'fixed';
+        //     // navbarElement.style.top = '22px';
+        //     // navbarElement.style.left = '0';
+        //     // navbarElement.style.width = '100%';
+        //     //
+        //     // var metaViewport = document.createElement('meta');
+        //     // metaViewport.name = 'viewport';
+        //     // metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        //     // document.head.appendChild(metaViewport);
+        // }
 
-        var metaViewport = document.createElement('meta');
-        metaViewport.name = 'viewport';
-        metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        document.head.appendChild(metaViewport);
     }
 
 </script>

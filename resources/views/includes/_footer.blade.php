@@ -183,9 +183,32 @@
             $('#welcomeModal').modal('show');
         });
     }
-
     $(document).ready(function() {
         $('#email_confirm').modal('show');
     });
 </script>
+
+<script>
+    var empoloyee = {!! json_encode(session()->get('employee')) !!}
+
+    if(empoloyee) {
+        console.log(empoloyee)
+            setTimeout(function() {
+                $.ajax({
+                    url: "{{route('close-different-login')}}",
+                    method: 'POST',
+                    data: {
+                        emp_number: empoloyee.employee_number,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+
+                    },
+                });
+            }, 1500000); // 25 minutes in milliseconds
+    }
+
+</script>
+
+
 

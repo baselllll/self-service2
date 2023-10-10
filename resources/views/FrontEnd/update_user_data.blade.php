@@ -129,7 +129,7 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <input type="email" required class="form-control" id="email_employee_verified" placeholder="Enter Email">
+                            <input type="email" required class="form-control" id="email_employee_verified" placeholder="Enter Personnel Email">
                         </div>
                         <div>
                             <label><span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer_check_email"></span></label>

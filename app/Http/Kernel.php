@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
             \Inspector\Laravel\Middleware\WebRequestMonitoring::class,
             \App\Http\Middleware\SetLocaleMiddleware::class,
             \RealRashid\SweetAlert\ToSweetAlert::class,
+            \App\Http\Middleware\SessionTimeout::class,
         ],
 
         'api' => [

@@ -132,7 +132,7 @@ class ServiceDetailController extends Controller
             return redirect()->to('profile-employee?status_request=request_service');
         }
 
-        if($request->absence_attendance_type_id == 62){
+        if($request->absence_attendance_type_id == AppKeysProps::AnnuLeave_absence_type_id()->value){
             $accrauls_available = $request->get_Accruals_data;
             $start = Carbon::parse($request->start_date);
             $end = Carbon::parse($request->end_date);

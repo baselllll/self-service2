@@ -994,6 +994,10 @@ input[type="checkbox"]:checked + .checkbox-label::after {
     margin-top: 244px; padding-top: 1rem !important;
 }
 
+#design_nav{
+    margin-left: 129px;
+    margin-right: 91px;
+}
 @media (min-width: 0px) and (max-width: 844px)  {
     #tracking_container {
         background: #dfe4e9;
@@ -1010,9 +1014,11 @@ input[type="checkbox"]:checked + .checkbox-label::after {
         -webkit-border-radius: 11px;
     }
     #design_nav {
-        width: 388px;
+        width: 384px;
         display: flex;
         justify-content: center;
+        margin-left: 3px;
+        margin-right: 91px;
     }
     #em_requested_tracking {
         position: absolute;
@@ -1057,6 +1063,11 @@ input[type="checkbox"]:checked + .checkbox-label::after {
         position: absolute;
         top: -21px;
         left: 29px;
+    }
+    #logout_btn{
+        height: 36px;
+        width: 111px;
+        padding: 3px;
     }
 
 }

@@ -31,7 +31,7 @@ return
     'Submit_user'=>'Submit',
     'UpdateUser'=>'Registering New User Data',
     'deleted_success'=>'Successfully Deleted',
-    'email_employee'=>'Email Employee',
+    'email_employee'=>'Email Personnel Employee',
     'employee_not_Assign_title' => 'Assignment  Employee',
     'employee_not_Assign_content' => 'Employee Not Assigned to Supervisor ',
 
@@ -71,6 +71,7 @@ return
     "tracking_hint"=>"Please Mouse Over The Status on Tracking Request Line To See Changes",
     'CreationDate'=>'ReqDate',
     'StartDate'=>'Str.Date',
+    'rotate_screen'=>'It is better to rotate the screen to track the request',
     'device_is_opend'=>'The device is logged in on a different device. Please log out first.',
     'EndDate'=>'End.Date',
     'Accurals'=>'Accurals no',
@@ -303,4 +304,5 @@ return
     'Letter Services' => 'Letter Services',
     'Insurance' => 'Insurance',
     'Other' => 'Other',
+    'exceed_login_time'=>"you exceed number of login"
 ];

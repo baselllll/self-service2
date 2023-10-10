@@ -38,13 +38,13 @@ class LoginRepository extends MainOracleQueryRepo
         $flag_check_email_success=null;
         $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
 
-        if ($employee->attribute4 !== $ip and $employee->attribute4 !=null and $employee->attribute8 !=null){
-            return "device_is_opend";
-        }else{
-            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
-                 SET  attribute8='1'
-                 WHERE person_id = $person_id");
-        }
+//        if ($employee->attribute4 !== $ip and $employee->attribute4 !=null and $employee->attribute8 !=null){
+//            return "device_is_opend";
+//        }else{
+//            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+//                 SET  attribute8='1'
+//                 WHERE person_id = $person_id");
+//        }
 
         $result_data = $this->xxajmi_emp_reg_or_not($employee_number);
         if ($result_data->status_req=="0"){
@@ -58,6 +58,10 @@ class LoginRepository extends MainOracleQueryRepo
 
            $data_phone= $this->GetPhoneEmpFromPersonId($person_id);
            $email_employee= $this->GetEmailEmployee(request()->emp_number);
+
+            if($data_phone[0]->attribute9 == env('LoginedTime')){
+                return "exceed_login_time";
+            }
 
             if(isset($data_phone) and count($data_phone) > 0) {
                 if ($data_phone[0]->attribute3 < Carbon::now()) {
@@ -73,7 +77,7 @@ class LoginRepository extends MainOracleQueryRepo
                                 if (strlen($cur_zero_number) == 12) {
                                     $result = $this->smsVerifyHelper->sendSMS(
                                         $cur_zero_number,
-                                        trans('messages.OtpSms_Message_before') . " $otp " . trans('messages.OtpSms_Message_after')
+                                        trans('messages.OtpSms_Message_before') . " $otp " . trans('messages.OtpSms_Message_after'),$otp
                                     );
                                 }
                             }
@@ -96,8 +100,11 @@ class LoginRepository extends MainOracleQueryRepo
                 }
             }
 
+            $emp_to_get_attr = DB::table("HR.PER_ALL_PEOPLE_F")->where('person_id',$person_id)->first();
+            $times_loginNo = $emp_to_get_attr->attribute9;
+            $new_times_login = ++$times_loginNo;
             $updateQuery = "UPDATE HR.PER_ALL_PEOPLE_F
-                 SET attribute2 = '$otp', attribute3 ='$newDateTime', attribute4='$ip'
+                 SET attribute2 = '$otp', attribute3 ='$newDateTime', attribute4='$ip',attribute9='$new_times_login'
                  WHERE person_id = $person_id";
 
             if (isset($flag_check_email_success) && isset($flag_check_phone_success)) {

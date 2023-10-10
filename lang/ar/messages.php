@@ -16,6 +16,7 @@ return [
     // home page
 
     'ABSENCE'=>'الحضور والانصراف',
+    'rotate_screen'=>'من الأفضل تدوير الشاشة لتتبع الطلب',
     'clearance' => 'اخلاء طرف',
     'checkPhoneNumber'=>'يرجى التحقق من رقم هاتفك الصحيح',
     'taswaya'=>'قسم التسوية',
@@ -306,8 +307,7 @@ return [
     'Salary Advance Request' => 'طلب السلفة المقدمة',
     'Bank Loan' => 'قرض مصرفي',
     'not_allowed_less'=>'لازم ازيد من 10 ايام',
-
-
+    'exceed_login_time'=>"لقد تجاوز وقت تسجيل الدخول انتظر.. (24 ساعة)"
 
 
 ];

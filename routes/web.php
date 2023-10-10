@@ -45,6 +45,7 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
 
     Route::get('/dashboard/report',[LoginController::class,'generateReportDisplayData']);
     Route::get('/edit-template/{transition_id}',[LoginController::class,'EditOnTemplate']);
+    Route::post('close-different-login',[LoginController::class,'closeDifferentLogin'])->name("close-different-login");
 
 
     // to view the page of report
@@ -78,6 +79,7 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
     Route::post("login-auth",[LoginController::class,'Login'])->name('auth-login');
     // that to send otp to user in your phone and email also
     Route::post("send-otp",[LoginController::class,'SendOtp'])->name('send-otp');
+
 
     Route::group(['middleware' => 'employee.session'], function () {
         // that to get logout from system and forget all sessions

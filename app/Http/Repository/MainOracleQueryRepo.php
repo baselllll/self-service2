@@ -53,7 +53,7 @@ WHERE     ppf.person_id = paaf.person_id
   AND  paaf.position_id=pp.position_id(+)
   AND   paaf.location_id =hl.location_id(+)
   AND stat.assignment_status_type_id = paaf.assignment_status_type_id
-  AND jbt.language = 'US'
+  AND jbt.language(+) = 'US'
   AND stat.language = 'US'
   AND ppf.current_employee_flag = 'Y'
   and paaf.organization_id = hr.organization_id
@@ -467,16 +467,10 @@ WHERE     xxnotif.absence_type = '$absence_type'
         return DB::select("SELECT ppx.employee_number,
        ppx.person_id,
        ppx.full_name,
-       pac.segment1 email
-  FROM hr.per_all_people_f ppx,
-       hr.per_person_analyses ppa,
-       hr.per_analysis_criteria pac
-WHERE     ppx.person_id = ppa.person_id
-       AND ppa.analysis_criteria_id = pac.analysis_criteria_id
-       AND SYSDATE BETWEEN ppx.effective_start_date
-                       AND ppx.effective_end_date
-       AND pac.id_flex_num = '50590'
-       AND ppx.employee_number = '$emp_number'
+       ppx.email_address email
+  FROM hr.per_all_people_f ppx
+WHERE  sysdate between ppx.effective_start_date and ppx.effective_end_date
+and ppx.employee_number = '$emp_number'
 ");
     }
     //supervior validation
@@ -768,18 +762,29 @@ EOD;
     public function reg_users()
     {
         return DB::select("SELECT ppx.employee_number,
-         ppx.full_name,
-         apps.xx_fnd_custom_pkg.get_lookup_desc ('NATIONALITY',
-                                                 ppx.nationality,
-                                                 'M',
-                                                 'US')
-            nationality,
-         'Registered' AS registration_status
-    FROM selfservice.sshr_user_reg sshr, apps.per_people_x ppx
-   WHERE sshr.employee_number = ppx.employee_number AND sshr.reg_status = 'Y'
+       ppx.full_name,
+       apps.xx_fnd_custom_pkg.get_lookup_desc ('NATIONALITY',
+                                               ppx.nationality,
+                                               'M',
+                                               'US')
+                       nationality,
+       'Registered' AS registration_status,
+        sshr.creation_date creation_date
+FROM selfservice.sshr_user_reg sshr, apps.per_people_x ppx
+WHERE sshr.employee_number = ppx.employee_number AND sshr.reg_status = 'Y'
 ORDER BY TO_NUMBER (ppx.employee_number)
 ");
     }
+    public function get_users_from_userReq($employee_number)
+    {
+        return DB::table('selfservice.sshr_user_reg')->where('employee_number',$employee_number)->first();
+    }
+    public function tracking_users()
+    {
+        return DB::table('xxajmi_notif')->get();
+    }
+
+
     public function non_reg_users()
     {
         return DB::select("  SELECT ppx.employee_number,
@@ -814,6 +819,16 @@ WHERE     ppx.current_employee_flag = 'Y'
                                         WHERE sshr.reg_status = 'Y')
 ")[0];
     }
+
+    public function activeSession(){
+
+        return DB::table('HR.PER_ALL_PEOPLE_F')
+            ->select('employee_number','attribute4','attribute3','attribute2') // Include 'other_column' which is not in GROUP BY
+            ->where('ATTRIBUTE11', '>', Carbon::now()->format('Y-m-d H:i:s'))
+            ->groupBy('employee_number', 'attribute4', 'attribute3','attribute2')
+            ->get();
+
+    }
     public function checkElgibalityOfAnnul($person_id){
         return DB::select("select selfservice.xxajmi_next_vac_start_date('$person_id') as next_vac_start_date  from dual")[0];
     }
@@ -821,7 +836,7 @@ WHERE     ppx.current_employee_flag = 'Y'
     public function CheckUsingPersonId($person_id){
         return DB::table('per_people_x')
             ->select('*')
-            ->where('person_id', '=', $person_id);
+            ->where('person_id', '=', $person_id)->first();
     }
     public function MangerInterface($mgr_person_id)
     {
@@ -1484,9 +1499,12 @@ WHERE fifs.id_flex_num ='$flex_id'");
     public function updateOnPerPeople($person_id){
         try {
             $newDateTime = Carbon::now();
-            $formattedDateTime = $newDateTime->format('Y-m-d H:i:s');
+            $newDateTime_expire_date = Carbon::now();
+            $session_time = env('session_lifetime');
+            $newexpire = $newDateTime->addMinutes($session_time);
+            $formattedDateTime = $newDateTime_expire_date->format('Y-m-d H:i:s');
             DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
-                 SET  ATTRIBUTE3 ='$formattedDateTime'
+                 SET  ATTRIBUTE3 ='$formattedDateTime' ,  attribute11='$newexpire'
                  WHERE PERSON_ID = '$person_id'");
         }catch (\Exception $exception){
             DB::rollBack();
@@ -1494,11 +1512,11 @@ WHERE fifs.id_flex_num ='$flex_id'");
     }
     public function updateOnPerPeopleIp($person_id){
         try {
-//            $newDateTime = Carbon::now()->addSeconds(270);
             $newDateTime = Carbon::now();
             $formattedDateTime = $newDateTime->format('Y-m-d H:i:s');
             DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
                  SET   ATTRIBUTE3 ='$formattedDateTime',
+                      ATTRIBUTE11 = null,
                       ATTRIBUTE4 = null
                  WHERE PERSON_ID = '$person_id'");
         }catch (\Exception $exception){

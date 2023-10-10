@@ -102,14 +102,15 @@ class ProfileEmployeeController extends Controller
         }
         $searchTerm = 67;
         // check user have muslim or not to out service haji
-//        if($full_data_user->per_information7 !== $this->muslimReligion->value or is_null($full_data_user->per_information7)){
-//            foreach ($all_services as $key => $absence) {
-//                if ($absence->absence_attendance_type_id == $searchTerm) {
-//                    array_splice($all_services, $key, 1);
-//                    break;
-//                }
-//            }
-//        }else{
+        if($full_data_user->per_information7 !== $this->muslimReligion->value or is_null($full_data_user->per_information7)){
+            foreach ($all_services as $key => $absence) {
+                if ($absence->absence_attendance_type_id == $searchTerm) {
+                    array_splice($all_services, $key, 1);
+                    break;
+                }
+            }
+        }
+//else{
 //
 //            $keysToRemove = [];
 //
@@ -135,7 +136,7 @@ class ProfileEmployeeController extends Controller
         $status = $this->loginService->checkElgibalityOfAnnul($employee->person_id)->next_vac_start_date;
 
         if($status=="N"){
-            $annual_leave = 62;
+            $annual_leave = AppKeysProps::AnnuLeave_absence_type_id()->value;
 
             $keysToRemove = [];
 
@@ -151,7 +152,7 @@ class ProfileEmployeeController extends Controller
         }
         //maragie_leave
         if($full_data_user->marital_status=="S"){
-            $child_leave = 64;
+            $child_leave = AppKeysProps::ChildLeave_absence_type_id()->value;
 
             $keysToRemove = [];
 
@@ -167,7 +168,7 @@ class ProfileEmployeeController extends Controller
         }
 
         if($full_data_user->marital_status=="M"){
-            $marige_leave = 68;
+            $marige_leave = AppKeysProps::MargieLeave_absence_type_id()->value;
 
             $keysToRemove = [];
 
@@ -190,8 +191,8 @@ class ProfileEmployeeController extends Controller
         if ($full_data_user->sex =="F"){
 
         }else{
-            $omoma = 2065;
-            $death_idah = 2064;
+            $omoma = AppKeysProps::Omoma_absence_type_id()->value;
+            $death_idah = AppKeysProps::Idah_absence_type_id()->value;
 
             $keysToRemove = [];
 

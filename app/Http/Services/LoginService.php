@@ -26,7 +26,21 @@ class LoginService
         return $this->loginRepo->login($employee_number);
     }
 
+    public function generateRandomMacAddress(){
+            $characters = '0123456789ABCDEF';
+            $macAddress = '';
 
+            for ($i = 0; $i < 12; $i++) {
+                $macAddress .= $characters[rand(0, 15)];
+                if ($i % 2 != 0 && $i < 11) {
+                    $macAddress .= ':';
+                }
+            }
+
+            return $macAddress;
+
+
+    }
     public function getUserIpAddr(){
         $ipaddress = '';
         if (isset($_SERVER['HTTP_CLIENT_IP']))
@@ -43,6 +57,7 @@ class LoginService
             $ipaddress = $_SERVER['REMOTE_ADDR'];
         else
             $ipaddress = 'UNKNOWN';
+
         return $ipaddress;
     }
         public function SendOtpService($otp,$person_id,$employee_number,$employee=null)
@@ -72,6 +87,20 @@ class LoginService
      {
             return $this->loginRepo->reg_users();
      }
+
+     public function get_users_from_userReq($employee_number)
+     {
+            return $this->loginRepo->get_users_from_userReq($employee_number);
+     }
+     public function tracking_users()
+     {
+            return $this->loginRepo->tracking_users();
+     }
+     public function CheckUsingPersonId($person_id)
+     {
+            return $this->loginRepo->CheckUsingPersonId($person_id);
+     }
+
     public function non_reg_users()
      {
             return $this->loginRepo->non_reg_users();
@@ -83,6 +112,10 @@ class LoginService
      public function count_not_register_user()
      {
             return $this->loginRepo->count_not_register_user();
+     }
+    public function activeSession()
+     {
+            return $this->loginRepo->activeSession();
      }
 
 
