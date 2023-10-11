@@ -112,7 +112,7 @@
 
                 if (response.results) {
                     $('#verification_success_message').html(response.results);
-                    if (response.results == "Please Check Mail" || response.results == "Please Check Phone" || response.results == "Please Check Phone and Mail" || response.results =="يرجى التحقق من الجوال والايميل") {
+                    if (response.results == "Please Check Mail" || response.results == "Please Check Phone" || response.results == "Please Check Phone and Mail" || response.results =="يرجى التحقق من الجوال والايميل" || response.results == "Please Check Mail Only") {
                         if (emp_number) {
                             // Start the countdown
                             var countdownTime = 120; // 2 minutes in seconds

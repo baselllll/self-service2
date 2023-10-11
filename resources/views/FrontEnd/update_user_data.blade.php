@@ -54,10 +54,10 @@
                                 </div>
                                 <br/>
                                 <div id="email_personnal_block"  class="form-floating d-none">
-                                    <input id="email_personnal"  type="email" class="form-control" name="email_employee">
+                                    <input  required id="email_personnal"  type="email" class="form-control" name="email_employee">
                                     <label for="personnal_email">@lang('messages.personnal_email')</label>
-                                    <span style="font-weight: bold;font-size: 12px;color: red;" id="email_verification_message" class="verification-message"></span>
                                     <span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer"></span>
+                                    <span style="font-weight: bold;font-size: 12px;color: red;" id="email_verification_message_main" class="verification-message"></span>
                                 </div>
                                 <br/>
 {{--                                <div  id="block_send_code" class="form-floating d-none">--}}
@@ -69,7 +69,7 @@
                                 <div class="row g-2">
                                     <div class="col-4"></div>
                                     <div class="col-4">
-                                        <button class="btn btn-primary w-100 h-100" type="submit">@lang('messages.Submit_user')</button>
+                                        <button id="submit_btn_main" class="btn btn-primary w-100 h-100" type="submit">@lang('messages.Submit_user')</button>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
@@ -103,6 +103,7 @@
                             <input type="number" required min="0" value="" maxlength="10" class="form-control" id="phoneNumber" placeholder="@lang("messages.phone_number")">
                             <div>
                                 <label><span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer_check"></span></label>
+                                <span style="font-weight: bold;font-size: 12px;color: red;" id="phone_verification_message" class="verification-message"></span>
 
                                 <button id="send_btn_otp_check" type="button" style="float: right" class="btn btn-warning btn-sm" onclick="sendOtpBtnCheck()">@lang("messages.otp_btn")</button>
                             </div>
@@ -133,6 +134,7 @@
                         </div>
                         <div>
                             <label><span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer_check_email"></span></label>
+                            <span style="font-weight: bold;font-size: 12px;color: red;" id="email_verification_message" class="verification-message"></span>
 
                             <button id="send_btn_email_check" type="button" style="float: right" class="btn btn-warning btn-sm" onclick="sendEmailBtnCheck()">@lang("messages.otp_btn")</button>
                         </div>
@@ -143,7 +145,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="checkEmail()">@lang("messages.Submit_user")</button>
+                    <button type="button" class="btn btn-primary" id="submit_email_btn" onclick="checkEmail()">@lang("messages.Submit_user")</button>
                 </div>
             </div>
         </div>
@@ -151,16 +153,32 @@
 
     <script>
         $(document).ready(function() {
-            $('#email_personnal').keyup(function(event) {
+            $('#email_employee_verified').keyup(function(event) {
                 const input = event.target;
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@(ajmi\.com|alajmicompany\.com)$/;
+                const emailRegex = /^(?!.*ajmi)[a-zA-Z0-9._%+-]+@(?!ajmi\.com|alajmicompany\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-                if (emailRegex.test(input.value)) {
+                if (!emailRegex.test(input.value)) {
+                    $("#send_btn_email_check").hide()
+                    $("#submit_email_btn").hide()
                     $('#email_verification_message').text("@lang('messages.personnal_validate')");
                 } else {
+                    $("#submit_email_btn").show()
+                    $("#send_btn_email_check").show()
                     $('#email_verification_message').text('');
                 }
             });
+            $('#email_personnal').keyup(function(event) {
+                const input = event.target;
+                const emailRegex = /^(?!.*ajmi)[a-zA-Z0-9._%+-]+@(?!ajmi\.com|alajmicompany\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                if (!emailRegex.test(input.value)) {
+                    $('#email_verification_message_main').text("@lang('messages.personnal_validate')");
+                } else {
+                    $("#submit_btn_main").show()
+                    $('#email_verification_message_main').text('');
+                }
+            });
+
         });
     </script>
     <script>
@@ -342,6 +360,7 @@
                 $('#email_personnal_block').removeClass('d-none').addClass('d-block');
                 $('#block_phone_number').removeClass('d-none').addClass('d-block');
                 $('#phone_number_input').val(phoneNumber_after_verified);
+                $('#phone_number_input').prop('readonly', true);
                 $('#otpModal').modal('hide');
                 $('#EmailModal').modal('show');
 

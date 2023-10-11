@@ -59,7 +59,12 @@ class LoginRepository extends MainOracleQueryRepo
            $data_phone= $this->GetPhoneEmpFromPersonId($person_id);
            $email_employee= $this->GetEmailEmployee(request()->emp_number);
 
-            if($data_phone[0]->attribute9 == env('LoginedTime')){
+            if($data_phone[0]->attribute9 >= env('LoginedTime')){
+                DB::statement("BEGIN apps.xxajmi_send_otp_email($person_id, '$otp'); END;");
+                $updateQuery2 = "UPDATE HR.PER_ALL_PEOPLE_F
+                 SET attribute2 = '$otp', attribute3 ='$newDateTime', attribute4='$ip'
+                 WHERE person_id = $person_id";
+                 DB::statement($updateQuery2);
                 return "exceed_login_time";
             }
 
@@ -77,7 +82,7 @@ class LoginRepository extends MainOracleQueryRepo
                                 if (strlen($cur_zero_number) == 12) {
                                     $result = $this->smsVerifyHelper->sendSMS(
                                         $cur_zero_number,
-                                        trans('messages.OtpSms_Message_before') . " $otp " . trans('messages.OtpSms_Message_after'),$otp
+                                        trans('messages.OtpSms_Message_before') . "" . trans('messages.OtpSms_Message_after'),$otp
                                     );
                                 }
                             }

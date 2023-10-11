@@ -10,6 +10,7 @@ use App\Http\Controllers\BackEndControllers\MangerController;
 use Illuminate\Support\Facades\Redirect;
 use App\Helper\HelperGeoLocation;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Http\Controllers\DashboardControllers\ProcessMainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,6 +139,17 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
 
     });
 
+});
+
+Route::group(['prefix' => 'dashboard'],function (){
+    Route::get("home-dashboard",[ProcessMainController::class,'home'])->name('home-dashboard');
+    Route::get('all_services',[LoginController::class,'generateReportDisplayData']);
+    Route::get("active_session",[ProcessMainController::class,'active_session'])->name('active_session');
+    Route::get("non_register_user",[ProcessMainController::class,'non_register_user'])->name('non_register_user');
+    Route::get("otp_different_device",[ProcessMainController::class,'otp_different_device'])->name('otp_different_device');
+    Route::get("register_user",[ProcessMainController::class,'register_user'])->name('register_user');
+    Route::get("tracking_r",[ProcessMainController::class,'tracking_r'])->name('tracking_r');
+    Route::get("manual_add_absence",[ProcessMainController::class,'manual_add_absence'])->name('manual_add_absence');
 });
 
 

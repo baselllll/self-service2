@@ -768,6 +768,8 @@ EOD;
                                                'M',
                                                'US')
                        nationality,
+               sshr.mobile_no,
+               sshr.email_address,
        'Registered' AS registration_status,
         sshr.creation_date creation_date
 FROM selfservice.sshr_user_reg sshr, apps.per_people_x ppx
@@ -823,11 +825,11 @@ WHERE     ppx.current_employee_flag = 'Y'
     public function activeSession(){
 
         return DB::table('HR.PER_ALL_PEOPLE_F')
-            ->select('employee_number','attribute4','attribute3','attribute2') // Include 'other_column' which is not in GROUP BY
+            ->select('employee_number','attribute4','attribute3','attribute2','attribute11') // Include 'other_column' which is not in GROUP BY
             ->where('ATTRIBUTE11', '>', Carbon::now()->format('Y-m-d H:i:s'))
-            ->groupBy('employee_number', 'attribute4', 'attribute3','attribute2')
+            ->where('ATTRIBUTE4', '!=',null)
+            ->groupBy('employee_number', 'attribute4', 'attribute3','attribute2','attribute11')
             ->get();
-
     }
     public function checkElgibalityOfAnnul($person_id){
         return DB::select("select selfservice.xxajmi_next_vac_start_date('$person_id') as next_vac_start_date  from dual")[0];

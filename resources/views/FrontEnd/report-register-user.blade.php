@@ -28,16 +28,15 @@
                     <tr>
                         <th>EmpNum</th>
                         <th>EmpName</th>
-                        <th>PhoneNo</th>
-                        <th>Email</th>
                         <th>Service</th>
                         <th>Department</th>
                         <th>Manager</th>
                         <th>AdminMr</th>
                         <th>TopMr</th>
-
                         <th>PointStopStatus</th>
                         <th>FinalStatus</th>
+                        <th>Phone</th>
+                        <th>Email</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,8 +45,6 @@
                         <tr>
                             <td>{{$item->empno}}</td>
                             <td>{{explode(" ",$item->requestor)[0]}} {{explode(" ",$item->requestor)[1]}}</td>
-                            <td>{{$item->phone}}</td>
-                            <td>{{$item->email_address}}</td>
                             <td>{{$item->absence_type}}</td>
 
                             <td>{{$item->cost_center_name}}</td>
@@ -57,6 +54,8 @@
 
                             <td>({{$item->mgr_approval_status}} - {{$item->admin_mgr_approval_status}} - {{$item->top_management_approval_status}})</td>
                             <td>{{$item->approval_status}}</td>
+                            <td>{{$item->phone}}</td>
+                            <td>{{$item->email_address}}</td>
                         </tr>
                     @endforeach
 
@@ -81,6 +80,8 @@
                         <th>Nationality</th>
                         <th>RegStatus</th>
                         <th>CreationDate</th>
+                        <th>Email</th>
+                        <th>Phone</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -92,6 +93,9 @@
                             <td>{{$item->nationality}}</td>
                             <td>{{$item->registration_status}}</td>
                             <td>{{$item->creation_date}}</td>
+                            <td>{{$item->email_address}}</td>
+                            <td>{{$item->mobile_no}}</td>
+
                         </tr>
                     @endforeach
 
@@ -139,7 +143,7 @@
     <br/> <br/> <br/>
     <div class="row">
         <div class="col-2">
-            <h5>Reset Users from Different Devices</h5>
+            <h5>Kill Users from Different Devices</h5>
         </div>
         <div class="col-6">
             <div>
@@ -150,7 +154,7 @@
                             <div id="emp_updated" class="form-text"></div>
                             <span class="sr-only" id="message_updated">Loading...</span>
                         </div>
-                    <button id="emp_updated_btn" class="btn  btn-secondary">Reset</button>
+                    <button id="emp_updated_btn" class="btn  btn-secondary">Kill</button>
                     <br/>
 
 

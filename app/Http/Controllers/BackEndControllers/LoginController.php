@@ -286,13 +286,13 @@ class LoginController extends Controller
         return view('frontend.update_user_data');
     }
     public function UpdateUser(Request $request){
+        $result_data = $this->loginService->xxajmi_emp_reg_or_not($request->emp_number);
+        if(!isset($request->phone_number) and !isset($request->email_employee)){
+            Alert::error("ERROR",__('messages.login_error'));
+            return redirect('login');
+        }
         try {
-            $email_pattern = '/^[a-zA-Z0-9._%+-]+@(ajmi\.com|alajmicompany\.com)$/';
-            if (preg_match($email_pattern, $request->email)) {
-                Alert::warning("WARNING",__('messages.personnal_validate'));
-                return redirect('login');
-            }
-            $result_data = $this->loginService->xxajmi_emp_reg_or_not($request->emp_number);
+
             if ($result_data->status_req=="1"){
                 Alert::warning("WARNING",__('messages.register_before'));
                 return redirect('login');
@@ -381,10 +381,10 @@ class LoginController extends Controller
             }
             if ($result == 'exceed_login_time') {
                 return response()->json([
-                    'results' => __('messages.exceed_login_time')
+                    'results' => __('messages.success_sent_email')
                 ]);
             }
-            if ($result == 'device_is_opend') {
+            if ($result == 'success_sent_email') {
                 return response()->json([
                     'results' => __('messages.success_sent_email')
                 ]);
@@ -459,8 +459,14 @@ class LoginController extends Controller
             $tracking_users = $this->loginService->tracking_users();
             foreach ($tracking_users as &$item) {
                 $get_users_from_userReq = $this->loginService->get_users_from_userReq($item->empno);
-                $item->phone  = $get_users_from_userReq->mobile_no;
-                $item->email_address  = $get_users_from_userReq->email_address;
+
+                if (isset($get_users_from_userReq)){
+                    $item->phone  = $get_users_from_userReq->mobile_no;
+                    $item->email_address  = $get_users_from_userReq->email_address;
+                }else{
+                    $item->phone  = '';
+                    $item->email_address  = '';
+                }
                 $item->mgr_emp_number = $this->loginService->CheckUsingPersonId($item->mgr_person_id);
                 $item->admin_emp_number = $this->loginService->CheckUsingPersonId($item->admin_mgr_person_id);
                 $item->top_emp_number = $this->loginService->CheckUsingPersonId($item->top_mgmt_person_id);

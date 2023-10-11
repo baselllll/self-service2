@@ -23,6 +23,9 @@ class MangerController extends Controller
     public function ApproveRequest(Request $request){
         try {
             $user_type = session()->get('user_type');
+            if($user_type== AppKeysProps::AdminManger()->value){
+                $request->type_person = "AdminMgr";
+            }
             $this->mangerLogicService->ApproveRequest($request->notify_confirm,$request->transaction_id,$request->note,$request->type_person);
             Alert::success("SUCCESS",__('messages.mr_Approve'));
             return redirect()->route('profile-employee',['user_type'=>$user_type]);

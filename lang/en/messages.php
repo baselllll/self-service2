@@ -39,7 +39,7 @@ return
     'otp_sent_success' => 'Please Check Phone',
     'both_mail_phone' => 'Please Check Phone and Mail',
     'clearance' => 'Clearance',
-    'success_sent_email' => 'Please Check Mail',
+    'success_sent_email' => 'Please Check Mail Only',
     'emp_not_exist' => 'Employee Does Not Exist',
     'emp_not_phone_number' => 'Employee Does Not Have a Phone Number',
     'emp_not_mail' => 'Employee Does Not Have an Email Address',
