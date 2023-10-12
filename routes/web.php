@@ -47,6 +47,7 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
     Route::get('/dashboard/report',[LoginController::class,'generateReportDisplayData']);
     Route::get('/edit-template/{transition_id}',[LoginController::class,'EditOnTemplate']);
     Route::post('close-different-login',[LoginController::class,'closeDifferentLogin'])->name("close-different-login");
+    Route::get('continue_process_absence',[LoginController::class,'continueProcessAbsence'])->name("continue_process_absence");
 
 
     // to view the page of report

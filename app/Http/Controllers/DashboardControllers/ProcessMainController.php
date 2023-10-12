@@ -42,7 +42,7 @@ class ProcessMainController extends Controller
         return view('dashboard.register_user',compact("reg_users"));
     }
     public function manual_add_absence(){
-        return view('dashboard.manule_add_absence');
+        return view('dashboard.manual_add_absence');
     }
 
     public function tracking_r(){

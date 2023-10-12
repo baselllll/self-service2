@@ -14,6 +14,7 @@ use Spatie\Enum\Enum;
  * @method static self Pend_approved_pending_req()
  * @method static self Mgr_approved_pending_req()
  * @method static self MuslimReligion()
+ * @method static self TopManger_Approved()
  * @method static self Omoma_absence_type_id()
  * @method static self Idah_absence_type_id()
  * @method static self MargieLeave_absence_type_id()
@@ -38,6 +39,7 @@ class AppKeysProps extends Enum
             'Pend_approved_pending_req'=>'Pending Approval',
             'Mgr_approved_pending_req'=>'Manager Approved',
             'MuslimReligion'=>'MUSLIM',
+            'TopManger_Approved'=>'Approved',
             'Omoma_absence_type_id'=>2065,
             'Idah_absence_type_id'=>2064,
             'MargieLeave_absence_type_id'=>68,

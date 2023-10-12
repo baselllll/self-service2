@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register Report</title>
+    <title>SSHR Dashboard</title>
     <link rel="icon" href="{{asset("img/ajmi.png")}}" type="image/png">
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css"/>
@@ -17,45 +17,88 @@
 </head>
 
 <body>
-<div class="container">
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col-12">
             <h1>Tracking Requests for Employee</h1>
             <div class="table-responsive">
                 <table id="example3" class="display" style="width:100%">
                     <thead class="style_tabled">
                     <tr>
-                        <th>EmpNum</th>
+                        <th>Id</th>
+                        <th>EmpNo</th>
                         <th>EmpName</th>
                         <th>Service</th>
-                        <th>Department</th>
-                        <th>Manager</th>
-                        <th>AdminMr</th>
-                        <th>TopMr</th>
-                        <th>PointStopStatus</th>
-                        <th>FinalStatus</th>
-                        <th>Phone</th>
+                        <th>Depr</th>
+                        <th>Crea.D</th>
+                        <th>Hours</th>
+                        <th>Mgr</th>
+                        <th>Admin.Mng</th>
+                        <th>Top.Mng</th>
+                        <th>Po.Status</th>
+                        <th>Fin.Status</th>
+                        <th>Mobile</th>
                         <th>Email</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($tracking_users as $item)
-
+                        @php
+                            $start_date = new DateTime($item->absence_start_date);
+                            $end_date = new DateTime($item->absence_end_date);
+                            $interval = $start_date->diff($end_date);
+                            $hours = $interval->format('%h');
+                            $minutes = $interval->format('%i');
+                            $total_hours = $hours + ($minutes / 60);
+                        @endphp
                         <tr>
+                            <td>{{$item->transaction_id}}</td>
                             <td>{{$item->empno}}</td>
                             <td>{{explode(" ",$item->requestor)[0]}} {{explode(" ",$item->requestor)[1]}}</td>
                             <td>{{$item->absence_type}}</td>
-
                             <td>{{$item->cost_center_name}}</td>
-                            <td>({{$item->admin_emp_number->first_name}} {{$item->admin_emp_number->last_name}}- {{$item->admin_emp_number->employee_number}})</td>
-                            <td>({{$item->mgr_emp_number->first_name}} {{$item->admin_emp_number->last_name}}- {{$item->mgr_emp_number->employee_number}})</td>
-                            <td>({{$item->top_emp_number->first_name}} {{$item->top_emp_number->last_name}}- {{$item->top_emp_number->employee_number}})</td>
+                            <td>{{$item->creation_date}}</td>
+                            @if($item->absence_type=="Permission - Personal Work" or $item->absence_type=="Permission - Official Work")
+                                <td>@if($total_hours==0) 2 @else {{$total_hours}} @endif</td>
+                            @else
+                                <td></td>
+                            @endif
 
-                            <td>({{$item->mgr_approval_status}} - {{$item->admin_mgr_approval_status}} - {{$item->top_management_approval_status}})</td>
-                            <td>{{$item->approval_status}}</td>
+                            <td>({{$item->mgr_emp_number->first_name}} {{$item->mgr_emp_number->last_name}}- {{$item->mgr_emp_number->employee_number}})</td>
+                            <td>({{$item->admin_emp_number->first_name}} {{$item->admin_emp_number->last_name}}- {{$item->admin_emp_number->employee_number}})</td>
+
+                        @if($item->no_of_approvals=="3")
+                                <td>({{$item->top_emp_number->first_name}} {{$item->top_emp_number->last_name}}- {{$item->top_emp_number->employee_number}})</td>
+                            @else
+                               <td></td>
+                            @endif
+
+                            @if($item->no_of_approvals=="3")
+                                <td>({{$item->mgr_approval_status}} - {{$item->admin_mgr_approval_status}} - {{$item->top_management_approval_status}})</td>
+                            @else
+                                <td>({{$item->mgr_approval_status}} - {{$item->admin_mgr_approval_status}})</td>
+
+                            @endif
+                           <td>{{$item->approval_status}}</td>
                             <td>{{$item->phone}}</td>
                             <td>{{$item->email_address}}</td>
+                            @if($item->no_of_approvals=="3")
+                                @if($item->added_absence_check=="N" and  !str_contains($item->approval_status,'Rejected') and !str_contains($item->top_management_approval_status,'Pending'))
+                                    <td><button id="insert_absence" type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary">Insert</button></td>
+                                @else
+                                    <td></td>
+                                @endif
+                            @endif
+
+                            @if($item->no_of_approvals=="2")
+                                @if($item->added_absence_check=="N" and  !str_contains($item->approval_status,'Rejected') and !str_contains($item->admin_mgr_approval_status,'Pending'))
+                                    <td><button  type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary insert_absence">Insert</button></td>
+                                @else
+                                    <td></td>
+                                @endif
+                            @endif
+
+
                         </tr>
                     @endforeach
 
@@ -63,13 +106,11 @@
                 </table>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
     <br/> <br/> <br/>
     <hr/>
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col-12">
             <h1>Registered User</h1>
             <div class="table-responsive">
                 <table id="example" class="display" style="width:100%">
@@ -89,28 +130,25 @@
                         <tr>
                             <td>{{$item->employee_number}}</td>
                             <td>{{explode(" ",$item->full_name)[0]}} {{explode(" ",$item->full_name)[1]}}</td>
-
                             <td>{{$item->nationality}}</td>
                             <td>{{$item->registration_status}}</td>
                             <td>{{$item->creation_date}}</td>
                             <td>{{$item->email_address}}</td>
                             <td>{{$item->mobile_no}}</td>
-
                         </tr>
                     @endforeach
+
 
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
     <br/> <br/> <br/>
     <hr/>
 
     <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col-12">
             <h1>Not Registered User</h1>
             <div class="table-responsive">
                 <table id="example2" class="display" style="width:100%">
@@ -135,48 +173,30 @@
                 </table>
             </div>
         </div>
-        <div class="col-1"></div>
     </div>
     <br/> <br/> <br/>
 
     <hr/>
     <br/> <br/> <br/>
     <div class="row">
-        <div class="col-2">
-            <h5>Kill Users from Different Devices</h5>
-        </div>
-        <div class="col-6">
-            <div>
-                <div class="col-md-6 mx-auto">
-                        <div class="mb-3">
-                            <label for="emp_updated" class="form-label">Employee Number</label>
-                            <input type="number" class="form-control" id="emp_updated" aria-describedby="emp_updated">
-                            <div id="emp_updated" class="form-text"></div>
-                            <span class="sr-only" id="message_updated">Loading...</span>
-                        </div>
-                    <button id="emp_updated_btn" class="btn  btn-secondary">Kill</button>
-                    <br/>
-
-
-                </div>
-
-                </div>
-            </div>
+        <div class="col-2"></div>
         <div class="col-4">
+            <h5>Registration Users Charts</h5>
+        </div>
+        <div class="col-5"></div>
+        <div class="col-2">
 
             <div>
-                <h5>Registration Users Charts</h5>
                 <div class="col-md-10 mx-auto">
                     <canvas id="myPieChart"></canvas>
                 </div>
             </div>
         </div>
         </div>
-    </div>
+
 <hr/>
 <div class="row">
-    <div class="col-1"></div>
-    <div class="col-10">
+    <div class="col-12">
         <h1>Active Session</h1>
         <div class="table-responsive">
             <table id="example4" class="display" style="width:100%">
@@ -188,6 +208,7 @@
                     <th>IpAddress</th>
                     <th>Otp</th>
                     <th>ExpirationDate</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -200,6 +221,7 @@
                         <td>{{$item->attribute4}}</td>
                         <td>{{$item->attribute2}}</td>
                         <td>{{$item->attribute11}}</td>
+                        <td><button class="kill-session-btn btn btn-success" type="button" data-empp="{{$item->employee_number}}" >End</button></td>
                     </tr>
                 @endforeach
 
@@ -207,7 +229,6 @@
             </table>
         </div>
     </div>
-    <div class="col-1"></div>
 </div>
 
 
@@ -226,28 +247,33 @@
         $('#example').DataTable({
             dom: 'Bfrtip',
             buttons: ['excel'],
-            order: [[4, 'desc']] // Assuming 'creation_date' is the second column (index 1)
+            order: [[4, 'desc']],
+            "pageLength": 5
         });
     });
 
     $(document).ready(function () {
         $('#example2').DataTable({
             dom: 'Bfrtip',
-            buttons: ['excel']
+            buttons: ['excel'],
+            "pageLength": 5
         });
     });
     $(document).ready(function () {
         $('#example3').DataTable({
             dom: 'Bfrtip',
-            buttons: ['excel']
+            buttons: ['excel'],
+            "pageLength": 5
         });
     });
     $(document).ready(function () {
         $('#example4').DataTable({
             dom: 'Bfrtip',
-            buttons: ['excel']
+            buttons: ['excel'],
+            "pageLength": 5 // Set the number of records per page to 5
         });
     });
+
 
 </script>
 <script>
@@ -279,6 +305,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
 <script>
         $('#emp_updated_btn').click(function () {
             var emp_updated = $('#emp_updated').val();
@@ -299,5 +326,48 @@
             });
         });
 </script>
+<script>
+        $('.insert_absence').click(function () {
+            var check = confirm("Are to need to insert absence ?");
+            var transaction_id = $(this).data('trax');
+            if (check){
+                $.ajax({
+                    url: "{{ route('continue_process_absence') }}",
+                    data: {
+                        transaction_id: transaction_id
+                    },
+                    success: function (response) {
+                        if(response.results){
+                            alert(response.results)
+                        }
+                    }
+                });
+            }
+
+
+        });
+        $('.kill-session-btn').click(function () {
+            var check = confirm("Are to need to kill session for that user ?");
+            var emp_no = $('#kill_session').data('employee');
+            if (check){
+                $.ajax({
+                    url: "{{ route('close-different-login') }}",
+                    method: 'POST',
+                    data: {
+                        emp_number: emp_no,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if(response.results){
+                            alert(response.results)
+                        }
+                    }
+                });
+            }
+
+
+        });
+</script>
+
 </body>
 </html>

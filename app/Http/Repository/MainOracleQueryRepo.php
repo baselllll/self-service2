@@ -834,6 +834,9 @@ WHERE     ppx.current_employee_flag = 'Y'
     public function checkElgibalityOfAnnul($person_id){
         return DB::select("select selfservice.xxajmi_next_vac_start_date('$person_id') as next_vac_start_date  from dual")[0];
     }
+  public function continueProcessAbsence($transaction_id_input){
+        return DB::select("select selfservice.xxajmi_trxn_abs_created($transaction_id_input) as created_absence  from dual")[0];
+    }
 
     public function CheckUsingPersonId($person_id){
         return DB::table('per_people_x')
@@ -1424,7 +1427,7 @@ WHERE fifs.id_flex_num ='$flex_id'");
             if ($type=="approve"){
              DB::statement("UPDATE xxajmi_notif
                  SET taswiath_status =1 , taswiath_note  = '$note',
-                     approval_status = 'Admin Mgr Approved',
+                     approval_status = 'Pending Approval',
                      mgr_approval_status ='Approved',
                     mgr_action_date=SYSDATE,
                       admin_mgr_action_date=SYSDATE,

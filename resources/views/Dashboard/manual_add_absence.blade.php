@@ -21,7 +21,7 @@
     <div class="col-12">
         <div class="row">
             <div>
-                <h1 class="alert alert-primary" style="font-weight: bold">Absence Manual </h1>
+                <h1 class="alert alert-primary" style="font-weight: bold">Insert Absence </h1>
             </div>
 
 
@@ -33,12 +33,12 @@
                     <div>
                         <div class="col-md-6 mx-auto">
                             <div class="mb-3">
-                                <label for="emp_updated" class="form-label">Employee Number</label>
-                                <input type="number" class="form-control" id="emp_updated" aria-describedby="emp_updated">
-                                <div id="emp_updated" class="form-text"></div>
-                                <span class="sr-only" id="message_updated">Loading...</span>
+                                <label for="emp_updated" class="form-label">Enter Transaction ID</label>
+                                <input type="number" class="form-control" id="transaction_id_input" aria-describedby="transaction_id">
+                                <div id="transaction_id" class="form-text"></div>
+                                <span style="color: green" class="sr-only" id="message_updated">Loading...</span>
                             </div>
-                            <button id="emp_updated_btn" class="btn  btn-secondary">Continue</button>
+                            <button id="transaction_btn" class="btn  btn-secondary">Continue</button>
                             <br/>
 
 
@@ -72,15 +72,13 @@
 
 </script>
 <script>
-    $('#emp_updated_btn').click(function () {
-        var emp_updated = $('#emp_updated').val();
-        console.log(emp_updated);
+    $('#transaction_btn').click(function () {
+        var transaction_id = $('#transaction_id_input').val();
+        console.log(transaction_id);
         $.ajax({
-            url: "{{ route('close-different-login') }}",
-            method: 'POST',
+            url: "{{ route('continue_process_absence') }}",
             data: {
-                emp_number: emp_updated,
-                _token: "{{ csrf_token() }}"
+                transaction_id: transaction_id,
             },
             success: function (response) {
                 if (response.results) {

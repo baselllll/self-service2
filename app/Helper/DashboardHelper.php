@@ -14,7 +14,7 @@ class DashboardHelper
             ["image"=>"otp_different_device.png","url"=>"otp_different_device","name"=>"Kill Sessions"],
             ["image"=>"register_user.png","url"=>"register_user","name"=>"Register Users"],
             ["image"=>"tracking_r.jpg","url"=>"tracking_r","name"=>"Tracking Requests"],
-            ["image"=>"continue_process.png","url"=>"manual_add_absence","name"=>"Absence Manual"],
+            ["image"=>"continue_process.png","url"=>"manual_add_absence","name"=>"Insert Absence"],
         ];
     }
 

@@ -470,9 +470,10 @@ class LoginController extends Controller
                 $item->mgr_emp_number = $this->loginService->CheckUsingPersonId($item->mgr_person_id);
                 $item->admin_emp_number = $this->loginService->CheckUsingPersonId($item->admin_mgr_person_id);
                 $item->top_emp_number = $this->loginService->CheckUsingPersonId($item->top_mgmt_person_id);
-
+                $item->added_absence_check= $this->loginService->continueProcessAbsence($item->transaction_id)->created_absence;
             }
             $non_reg_users= $this->loginService->non_reg_users();
+
             $activeSession= $this->loginService->activeSession();
             foreach ($activeSession as &$newItem){
                 $main_repo = new MainOracleQueryRepo();
@@ -648,4 +649,29 @@ class LoginController extends Controller
             return response()->json(['results'=>"failed"]);
         }
     }
+
+    public function continueProcessAbsence(Request $request)
+    {
+        try {
+            $transaction_id_input = $request->transaction_id;
+            $get_details_trnx = $this->loginService->GetDetailsOfCustom($transaction_id_input);
+
+            if (
+                ($get_details_trnx->no_of_approvals == "2" && $get_details_trnx->approval_status == AppKeysProps::AdminMgrApproved()->value) ||
+                ($get_details_trnx->no_of_approvals == "3" && $get_details_trnx->approval_status == AppKeysProps::TopManger_Approved()->value)
+            ) {
+                $check_created_absence = $this->loginService->continueProcessAbsence($transaction_id_input)->created_absence;
+
+                if ($check_created_absence == "N") {
+                    $this->loginService->xxajmiProceessCreate($transaction_id_input);
+                    return response()->json(['results' => "absence successfully added"]);
+                }
+            }
+        } catch (\Exception $exception) {
+            return response()->json(['results' => "failed added absence"]);
+        }
+
+        return response()->json(['results' => "absence already added"]);
+    }
+
 }

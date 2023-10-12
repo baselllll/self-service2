@@ -270,4 +270,11 @@ public function getRecordOfHRTransactionStep($transaction_id)
 
          $this->detailsRepository->updateOnPerPeopleIp($person_id);
     }
+
+    public function continueProcessAbsence($transaction_id_input){
+        return $this->detailsRepository->continueProcessAbsence($transaction_id_input);
+    }
+    public function xxajmiProceessCreate($transaction_id_input){
+        return $this->detailsRepository->XjmRecordProcess($transaction_id_input,null);
+    }
 }
