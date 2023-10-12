@@ -183,7 +183,7 @@
         <div class="col-4">
             <h5>Registration Users Charts</h5>
         </div>
-        <div class="col-5"></div>
+        <div class="col-2"></div>
         <div class="col-2">
 
             <div>
@@ -348,7 +348,7 @@
         });
         $('.kill-session-btn').click(function () {
             var check = confirm("Are to need to kill session for that user ?");
-            var emp_no = $('#kill_session').data('employee');
+            var emp_no = $(this).data('empp');
             if (check){
                 $.ajax({
                     url: "{{ route('close-different-login') }}",
