@@ -29,7 +29,7 @@
                 <div class="team-item bg-light">
                     <div class="overflow-hidden">
 
-                        <a target="_blank"
+                        <a
                            @if($service['name']=="Absence Services")
                             href="{{route('profile-employee',['status_request'=>'request_service'])}}">
                             @elseif($service['name']=="Certificate Services")

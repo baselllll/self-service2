@@ -71,8 +71,8 @@ class HomeController extends Controller
         $filePath=null;
         foreach ($files as $file) {
             $fileName = pathinfo($file, PATHINFO_FILENAME);
-            if ($fileName === $requested_notification[0]->empno) {
-                $empno = $requested_notification[0]->empno;
+            if ($fileName === $custom_details_employee->empno) {
+                $empno = $custom_details_employee->empno;
                 $segments = explode('/', $file);
                 $segments[1] = $empno;
                 $newUrl = implode('/', $segments);

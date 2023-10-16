@@ -89,6 +89,7 @@
                                 <th scope="col">@lang('messages.mr_EmployeeName') </th>
                                 <th scope="col">@lang('messages.mr_StartDate') </th>
                                 <th scope="col">@lang('messages.mr_EndDate') </th>
+                                <th scope="col">@lang('messages.mr_Hours') </th>
                                 <th scope="col">@lang('messages.mr_Status') </th>
 
                                 <th scope="col"></th>
@@ -96,6 +97,7 @@
                             </thead>
                             <tbody style="color: black">
                             @foreach($requested_notification as $item)
+
                                 @php
                                     $conditions =   ($item->delegate_to_emp==session()->get('employee')->employee_number  and \Carbon\Carbon::now() >= $item->delegate_from_date and \Carbon\Carbon::now() <= $item->delegate_to_date);
                                 @endphp
@@ -116,6 +118,7 @@
                                                <td style="color: white">{{$item->emp_name}}</td>
                                                <td style="color: white">{{$item->absence_start_date}}</td>
                                                <td style="color: white">{{$item->absence_end_date}}</td>
+                                               <td style="color: white">{{$item->time_start}} - {{$item->time_end}}</td>
                                                <td style="color: white">{{$item->approval_status}}</td>
                                                @if($item->mgr_approval_status!=$pending_status )
                                                    <td style="color: white"></td>
@@ -187,6 +190,7 @@
                                                 <td style="color: white">{{$item->emp_name}}</td>
                                                 <td style="color: white">{{$item->absence_start_date}}</td>
                                                 <td style="color: white">{{$item->absence_end_date}}</td>
+                                                     <td style="color: white">{{$item->time_start}} - {{$item->time_end}}</td>
                                                 <td style="color: white">{{$item->approval_status}}</td>
                                                 @if($item->top_management_approval_status!=$pending_status )
                                                     <td style="color: white"></td>
@@ -258,6 +262,7 @@
                                                 <td style="color: white">{{$item->emp_name}}</td>
                                                 <td style="color: white">{{$item->absence_start_date}}</td>
                                                 <td style="color: white">{{$item->absence_end_date}}</td>
+                                                     <td style="color: white">{{$item->time_start}} - {{$item->time_end}}</td>
                                                 <td style="color: white">{{$item->approval_status}}</td>
                                                 @if($item->admin_mgr_approval_status!=$pending_status )
                                                     <td style="color: white"></td>
@@ -326,6 +331,7 @@
                                               <td style="color: white">{{$item->emp_name}}</td>
                                               <td style="color: white">{{$item->absence_start_date}}</td>
                                               <td style="color: white">{{$item->absence_end_date}}</td>
+                                              <td style="color: white">{{$item->time_start}} - {{$item->time_end}}</td>
                                               <td style="color: white">{{$item->approval_status}}</td>
                                               @if($item->mgr_approval_status!=$pending_status )
                                                   <td style="color: white"></td>
@@ -370,6 +376,7 @@
                                               <td style="color: white">{{$item->emp_name}}</td>
                                               <td style="color: white">{{$item->absence_start_date}}</td>
                                               <td style="color: white">{{$item->absence_end_date}}</td>
+                                              <td style="color: white">{{$item->time_start}} - {{$item->time_end}}</td>
                                               <td style="color: white">{{$item->approval_status}}</td>
                                               @if($item->admin_mgr_approval_status!=$pending_status )
                                                   <td style="color: white"></td>

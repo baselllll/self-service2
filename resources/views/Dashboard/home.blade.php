@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PDF Report</title>
+    <title>Al-Ajmi SSHR Dashboard</title>
     <title>Register Report</title>
     <link rel="icon" href="{{asset("img/ajmi.png")}}" type="image/png">
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>

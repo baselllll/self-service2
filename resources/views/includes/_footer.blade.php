@@ -210,5 +210,20 @@
 
 </script>
 
+<script>
+    if(empoloyee) {
+        console.log(empoloyee)
+        setTimeout(function() {
+            $.ajax({
+                url: "{{route('logout')}}",
+                method: 'GET',
+                success: function(response) {
+
+                },
+            });
+        }, 420000); // 7 minutes in milliseconds
+    }
+</script>
+
 
 

@@ -122,9 +122,9 @@ class ServiceDetailController extends Controller
 
             $diffInMinutes = $timePart_end_date_to_diff->diffInMinutes($timePart_start_date_to_diff);
 
-            $diffHours = floor($diffInMinutes / 60);
+            $diffHours = $diffInMinutes / 60;
 
-            $request['difference_hours'] = (int)  $diffHours;
+            $request['difference_hours'] = $diffHours;
 
         }
         if( $request['start_date'] > $request['end_date']){

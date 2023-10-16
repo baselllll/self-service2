@@ -48,23 +48,41 @@
                                 <span style="font-weight: bold;font-size: 14px;color: red;" class="out_verifed_iqama" id="out_verifed_iqama"></span>
 
                                 <div id="block_phone_number" class="form-floating d-none" >
-                                    <input id="phone_number_input" min="0" required type="number" class="form-control" name="phone_number" placeholder="05xxxxxxxxx">
+                                    <div class="d-inline-flex form-floating" style="width: 351px;">
+                                        <input id="phone_number_input" style="padding-top: 52px;" min="0" required type="number" class="form-control" name="phone_number" >
+                                        <button type="button" style="width: 93px; height: 35px;margin-top: 10px;" class="btn btn-sm btn-primary" id="otp_btn_sms" onclick="sendOtpBtnCheck()">@lang("messages.otp_btn")</button>
+
+                                    </div>
+
                                     <label for="phone_number">@lang('messages.phone_number') (05xxxxxxxxx)</label>
                                     <span  style="font-weight: bold;font-size: 12px;color: darkorange;" class="validation-message" id="phone-validation"></span>
+                                    <div class="form-group">
+                                        <span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer_check"></span>
+                                        <div class="d-inline-flex " style="width: 428px;">
+                                            <input type="text" style="width: 135px; margin-top: 2px" required class="form-control" id="otp" placeholder="SMS OTP">
+                                            <button type="button" style="width: 52px;height: 26px;margin-top: 6px;" class="btn btn-sm btn-warning" id="otp_btn_sms_check" onclick="checkOTP()">check</button>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <br/>
                                 <div id="email_personnal_block"  class="form-floating d-none">
-                                    <input  required id="email_personnal"  type="email" class="form-control" name="email_employee">
+                                    <div class="d-inline-flex" style="width: 354px;">
+                                        <input  required id="email_personnal"  type="email" class="form-control" style="padding-top: 37px;" name="email_employee">
+                                        <button id="send_btn_email_check" type="button" style="width: 93px;height: 35px;margin-top: 10px;" class="btn btn-primary btn-sm" onclick="sendEmailBtnCheck()">@lang("messages.otp_btn")</button>
+                                    </div>
+
                                     <label for="personnal_email">@lang('messages.personnal_email')</label>
-                                    <span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer"></span>
+                                    <span style="font-size: 12px; color: red; font-weight: bold;" id="countdown_timer_check_email"></span>
                                     <span style="font-weight: bold;font-size: 12px;color: red;" id="email_verification_message_main" class="verification-message"></span>
+
+                                </div>
+                                <div class="d-inline-flex d-none otp_email_fieled" style="    margin-top: 4px;">
+                                    <input style="width: 135px;" type="number" min="0" required class="form-control" id="otp_email_value" placeholder="Mail OTP">
+                                    <button type="button" style="width: 52px;height: 26px;margin-top: 6px;" class="btn btn-sm btn-warning" id="otp_btn_mail_check" onclick="checkEmail()">check</button>
+
                                 </div>
                                 <br/>
-{{--                                <div  id="block_send_code" class="form-floating d-none">--}}
-{{--                                    <input required type="text" class="form-control" name="verification_code_number" placeholder="Subject">--}}
-{{--                                    <label for="verification_code_number">@lang('messages.Send_Code')</label>--}}
-{{--                                    <span style="font-weight: bold;font-size: 12px;color: red;" class="verification_code_number" id="verification_code_number"></span>--}}
-{{--                                </div>--}}
                                 <br/>
                                 <div class="row g-2">
                                     <div class="col-4"></div>
@@ -90,7 +108,7 @@
 
   @include('includes._footer')
     <!-- Modal -->
-    <div class="modal fade" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal fade" id="otpModal888" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -121,7 +139,7 @@
         </div>
     </div>
 
-    <div class="modal" id="EmailModal" tabindex="-1" role="dialog" aria-labelledby="EmailModalLabel" aria-hidden="true">
+    <div class="modal" id="EmailModal999" tabindex="-1" role="dialog" aria-labelledby="EmailModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -172,9 +190,12 @@
                 const emailRegex = /^(?!.*ajmi)[a-zA-Z0-9._%+-]+@(?!ajmi\.com|alajmicompany\.com)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
                 if (!emailRegex.test(input.value)) {
+
                     $('#email_verification_message_main').text("@lang('messages.personnal_validate')");
+                    $("#send_btn_email_check").hide()
                 } else {
                     $("#submit_btn_main").show()
+                    $("#send_btn_email_check").show()
                     $('#email_verification_message_main').text('');
                 }
             });
@@ -246,20 +267,15 @@
                             if(response.registered_before == "0"){
                                 if (response.verified === 1) {
                                     $('#out_verifed_iqama').text(response.results).css('color', 'green');
+                                    $('#block_phone_number').removeClass('d-none').addClass('d-block');
+                                    $('#email_personnal_block').removeClass('d-none').addClass('d-block');
+                                    $('.otp_email_fieled').removeClass('d-none').addClass('d-block');
+                                    $('#emp_number_input').prop('readonly', true);
+                                    $('#iqama_number_input').prop('readonly', true);
 
-
-                                    $('#otpModal').modal('show');
-                                    // $('#email_personnal_block').removeClass('d-none').addClass('d-block');
-                                    // $('#block_phone_number').removeClass('d-none').addClass('d-block');
-                                    // $('#block_send_code').removeClass('d-none').addClass('d-block');
-                                    // $('#btn_send_code').removeClass('d-none').addClass('d-block');
                                 }
                                 if (response.verified === 0) {
                                     $('#out_verifed_iqama').text(response.results).css('color', 'red');
-                                    $('#block_phone_number').removeClass('d-block').addClass('d-none');
-                                    $('#block_send_code').removeClass('d-block').addClass('d-none');
-                                    $('#btn_send_code').removeClass('d-block').addClass('d-none');
-                                    $('#email_personnal_block').removeClass('d-block').addClass('d-none');
                                 }
                             }
                             else if(response.registered_before == "1"){
@@ -343,68 +359,78 @@
         var phoneNumber_after_verified = document.getElementById("phoneNumber").value;
         var email_employee_after_verified = document.getElementById("email_employee_verified").value;
         async function checkOTP() {
-            const employeeNumber = $('input[name="emp_number"]').val();
             var otp = document.getElementById("otp").value;
-
-            const response = await $.ajax({
-                url: "{{ route('send_otp_for_check_otp') }}",
-                method: 'POST',
-                data: {
-                    otp: otp,
-                    employee_number: employeeNumber,
-                    _token: "{{ csrf_token() }}"
-                }
-            });
-            if(response.verified==1){
-                alert("success verified phone number follow enter data again")
-                $('#email_personnal_block').removeClass('d-none').addClass('d-block');
-                $('#block_phone_number').removeClass('d-none').addClass('d-block');
-                $('#phone_number_input').val(phoneNumber_after_verified);
-                $('#phone_number_input').prop('readonly', true);
-                $('#otpModal').modal('hide');
-                $('#EmailModal').modal('show');
-
-
-            }else{
-                alert("failed verified phone number")
-            }
-        }
-        async function sendOtpBtnCheck() {
-            var phoneNumber = document.getElementById("phoneNumber").value;
-            phoneNumber_after_verified = phoneNumber
-            const employeeNumber = $('input[name="emp_number"]').val();
-            $('#send_btn_otp_check').hide();
-
-            const response = await $.ajax({
-                url: "{{ route('send_otp_for_check_before') }}",
-                method: 'POST',
-                data: {
-                    phone_number: phoneNumber,
-                    employee_number: employeeNumber,
-                    _token: "{{ csrf_token() }}"
-                }
-            });
-            if (response.sended == 1) {
-                var countdownTime = 120; // 4 minutes in seconds
-                var countdownInterval = setInterval(updateCountdown, 1000);
-
-                function updateCountdown() {
-                    var minutes = Math.floor(countdownTime / 60);
-                    var seconds = countdownTime % 60;
-                    $('#countdown_timer_check').text(minutes + " minutes " + seconds + " seconds");
-                    countdownTime--;
-                    if (countdownTime < 0) {
-                        clearInterval(countdownInterval);
-                        $('#countdown_timer_check').text("@lang('messages.Countdown finished')");
-                        $('#send_btn_otp_check').show();
+            if(otp) {
+                    const employeeNumber = $('input[name="emp_number"]').val();
+                    var otp = document.getElementById("otp").value;
+                    const response = await $.ajax({
+                        url: "{{ route('send_otp_for_check_otp') }}",
+                        method: 'POST',
+                        data: {
+                            otp: otp,
+                            employee_number: employeeNumber,
+                            _token: "{{ csrf_token() }}"
+                        }
+                    });
+                    if(response.verified==1){
+                        $('#email_personnal_block').removeClass('d-none').addClass('d-block');
+                        $('#otp').hide();
+                        $("#otp_btn_sms_check").hide();
+                        $("#countdown_timer_check").hide();
+                        alert("success verified phone number")
+                    }else{
+                        alert("failed verified phone number")
                     }
                 }
+        }
+        async function sendOtpBtnCheck() {
+            var phoneNumber_input_main = document.getElementById("phone_number_input").value;
+            $('#send_btn_otp_check').hide();
+            if(phoneNumber_input_main.length == 10){
+                phoneNumber_after_verified = phoneNumber_input_main
+                const employeeNumber = $('input[name="emp_number"]').val();
+
+
+                const response = await $.ajax({
+                    url: "{{ route('send_otp_for_check_before') }}",
+                    method: 'POST',
+                    data: {
+                        phone_number: phoneNumber_input_main,
+                        employee_number: employeeNumber,
+                        _token: "{{ csrf_token() }}"
+                    }
+                });
+                if (response.sended == 1) {
+                    var countdownTime = 120; // 4 minutes in seconds
+                    var countdownInterval = setInterval(updateCountdown, 1000);
+
+                    function updateCountdown() {
+                        var minutes = Math.floor(countdownTime / 60);
+                        var seconds = countdownTime % 60;
+                        $('#countdown_timer_check').text(minutes + " minutes " + seconds + " seconds");
+                        countdownTime--;
+                        $('#otp_btn_sms').hide();
+                        $('#phone_number_input').prop('readonly', true);
+
+
+                        if (countdownTime < 0) {
+                            clearInterval(countdownInterval);
+                            $('#countdown_timer_check').text("@lang('messages.Countdown finished')");
+                            $('#otp_btn_sms').show();
+                            $('#phone_number_input').prop('readonly', false);
+                        }
+                    }
+                }
+            }else{
+                console.log(phoneNumber_input_main.length);
+                $("#phone_number_input").focus();
             }
+
         }
         async function sendEmailBtnCheck() {
-            var email_employee = document.getElementById("email_employee_verified").value;
+            var email_employee = document.getElementById("email_personnal").value;
             email_employee_after_verified = email_employee
-            const employeeNumber = $('input[name="emp_number"]').val();
+            var employeeNumber = $('input[name="emp_number"]').val();
             $('#send_btn_email_check').hide();
 
             const response = await $.ajax({
@@ -431,6 +457,7 @@
                         clearInterval(countdownInterval);
                         $('#countdown_timer_check_email').text("@lang('messages.Countdown finished')");
                         $('#send_btn_email_check').show();
+                        $('#email_personnal').prop('readonly', false);
                     }
                 }
             }
@@ -440,7 +467,7 @@
 
         async function checkEmail(){
             const employeeNumber = $('input[name="emp_number"]').val();
-            var otp = document.getElementById("otp_email").value;
+            var otp = document.getElementById("otp_email_value").value;
 
             const response = await $.ajax({
                 url: "{{ route('send_otp_email_for_check_otp') }}",
@@ -455,13 +482,10 @@
             if(response.verified==1){
                 console.log(email_employee_after_verified)
                 alert("success verified Email follow enter data again")
-                $('#email_personnal_block').removeClass('d-none').addClass('d-block');
-                $('#block_phone_number').removeClass('d-none').addClass('d-block');
-                $('#email_personnal').val(email_employee_after_verified);
-                $('#phone_number_input').prop('readonly', true);
+                $('#countdown_timer_check_email').hide();
+                $('#otp_email_value').hide();
+                $('#otp_btn_mail_check').hide();
                 $('#email_personnal').prop('readonly', true);
-                $('#otpModal').modal('hide');
-                $('#EmailModal').modal('hide');
             }else{
                 alert("failed verified Email")
             }

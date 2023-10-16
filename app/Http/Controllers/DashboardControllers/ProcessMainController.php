@@ -60,6 +60,7 @@ class ProcessMainController extends Controller
             $item->mgr_emp_number = $this->loginService->CheckUsingPersonId($item->mgr_person_id);
             $item->admin_emp_number = $this->loginService->CheckUsingPersonId($item->admin_mgr_person_id);
             $item->top_emp_number = $this->loginService->CheckUsingPersonId($item->top_mgmt_person_id);
+            $item->added_absence_check= $this->loginService->continueProcessAbsence($item->transaction_id)->created_absence;
 
     }
         return view('dashboard.tracking_r',compact('tracking_users'));

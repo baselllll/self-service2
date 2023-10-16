@@ -230,7 +230,7 @@ WHERE     ppx.person_id = ppa.person_id
     {
         $status = (array_key_exists('ATTRIBUTE12', $additional_data) && $additional_data['ATTRIBUTE12'] === 'N') ? 'Rejected' : 'Approved';
 
-        if ($absence_attendance_type_id == "2066" || $absence_attendance_type_id == "2068") {
+        if ($absence_attendance_type_id == AppKeysProps::PersonnalPremission_absence_type_id()->value || $absence_attendance_type_id == AppKeysProps::WorkPremission_absence_type_id()->value) {
             $calculate_differnce_day = null;
         }else{
             $calculate_differnce_day = DB::raw("TO_DATE('$date_end') - TO_DATE('$date_start')+1");

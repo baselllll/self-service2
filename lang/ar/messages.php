@@ -307,7 +307,7 @@ return [
     'Salary Advance Request' => 'طلب السلفة المقدمة',
     'Bank Loan' => 'قرض مصرفي',
     'not_allowed_less'=>'لازم ازيد من 10 ايام',
-    'exceed_login_time'=>"لقد تجاوز وقت تسجيل الدخول انتظر.. (24 ساعة)"
-
+    'exceed_login_time'=>"لقد تجاوز وقت تسجيل الدخول انتظر.. (24 ساعة)",
+ 'mr_Hours'=>'عدد الساعات',
 
 ];

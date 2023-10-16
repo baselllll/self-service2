@@ -57,13 +57,13 @@ return
     // home page
 
     'ABSENCE'=>'Available Services',
-    'Absence_Management'=>'My Requests',
+    'Absence_Management'=>'My History',
     'Select_Approval_Status'=>'Filter Approval Status By',
     'Approved'=>'Approved',
     'Rejected'=>'Rejected',
     'Pending'=>'Pending Approval',
     'AbsenceType'=>'ServType',
-    'SerialNumber'=>'Sl.No.',
+    'SerialNumber'=>'SN',
     'AbsenceCategory'=>'AbsenceCategory',
     'checkPhoneNumber'=>'Please Check Your Correct Phone Number',
     "OtpSms_Message_before"=>"OTP is : ",
@@ -128,8 +128,8 @@ return
     'Mariage Leave' => 'Mariage Leave',
     'Delay - Partial Unpaid Leave' => 'Delay - Partial Unpaid Leave',
     'Sick Leave' => 'Sick Leave',
-    'Permission - Official Work' => 'Permission - Official Work',
-    'Permission - Personal Work' => 'Permission - Personal Work',
+    'Official Permit' => 'Official Permit',
+    'Personal Permit' => 'Personal Permit',
     'accurals_title' => 'Warning',
     'unauthorizedLeave' => 'Unauthorized Service Leave',
     'accurals_message' => 'Annual Leave days exceeds your Accrued Leave Balance days, So apply leave days equal or less of Accrued Days.',
@@ -164,9 +164,10 @@ return
 
 
     // manger table employee
-    'mr_ServiceName'=>'ServiceName',
-    'mr_EmployeeNumber'=>'EmployeeNumber',
-    'mr_EmployeeName'=>'EmployeeName',
+    'mr_ServiceName'=>'ServName',
+    'mr_Hours'=>'Hours',
+    'mr_EmployeeNumber'=>'Emp#',
+    'mr_EmployeeName'=>'EmpName',
     'mr_StartDate'=>'StartDate',
     'mr_EndDate'=>'EndDate',
     'mr_Comments'=>'Comments',

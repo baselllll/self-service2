@@ -38,13 +38,13 @@ class LoginRepository extends MainOracleQueryRepo
         $flag_check_email_success=null;
         $newDateTime = $currentDateTime->addSeconds(env('SECOND_OTP'));
 
-//        if ($employee->attribute4 !== $ip and $employee->attribute4 !=null and $employee->attribute8 !=null){
-//            return "device_is_opend";
-//        }else{
-//            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
-//                 SET  attribute8='1'
-//                 WHERE person_id = $person_id");
-//        }
+        if ($employee->attribute4 !== $ip and $employee->attribute4 !=null and $employee->attribute8 !=null){
+            return "device_is_opend";
+        }else{
+            DB::statement("UPDATE HR.PER_ALL_PEOPLE_F
+                 SET  attribute8='1'
+                 WHERE person_id = $person_id");
+        }
 
         $result_data = $this->xxajmi_emp_reg_or_not($employee_number);
         if ($result_data->status_req=="0"){

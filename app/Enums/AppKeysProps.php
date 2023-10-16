@@ -46,7 +46,7 @@ class AppKeysProps extends Enum
             'AnnuLeave_absence_type_id'=>62,
             'ChildLeave_absence_type_id'=>64,
             'PersonnalPremission_absence_type_id'=>2068,
-            'WorkPremission_absence_type_id'=>2066,
+            'WorkPremission_absence_type_id'=>2063,
             'Sickleave_absence_type_id'=>70,
             'Emergency_absence_type_id'=>1061
         ];

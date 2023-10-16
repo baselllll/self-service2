@@ -21,16 +21,15 @@
         <div class="col-12">
             <h1>Tracking Requests for Employee</h1>
             <div class="table-responsive">
-                <table id="example3" class="display" style="width:100%">
+                <table id="example3" class="display" style="width:213%">
                     <thead class="style_tabled">
                     <tr>
                         <th>Id</th>
-                        <th>EmpNo</th>
+                        <th>Emp#</th>
                         <th>EmpName</th>
-                        <th>Service</th>
+                        <th>Serv</th>
                         <th>Depr</th>
                         <th>Crea.D</th>
-                        <th>Hours</th>
                         <th>Mgr</th>
                         <th>Admin.Mng</th>
                         <th>Top.Mng</th>
@@ -50,19 +49,19 @@
                             $hours = $interval->format('%h');
                             $minutes = $interval->format('%i');
                             $total_hours = $hours + ($minutes / 60);
+                             $cost_center_name = $item->cost_center_name;
+                             if (mb_strlen($cost_center_name, 'UTF-8') > 40) {
+                                 $cost_center_name = mb_substr($cost_center_name, 0, 40, 'UTF-8') . "...";
+                             }
                         @endphp
                         <tr>
                             <td>{{$item->transaction_id}}</td>
                             <td>{{$item->empno}}</td>
                             <td>{{explode(" ",$item->requestor)[0]}} {{explode(" ",$item->requestor)[1]}}</td>
                             <td>{{$item->absence_type}}</td>
-                            <td>{{$item->cost_center_name}}</td>
+                            <td>{{$cost_center_name}}</td>
                             <td>{{$item->creation_date}}</td>
-                            @if($item->absence_type=="Permission - Personal Work" or $item->absence_type=="Permission - Official Work")
-                                <td>@if($total_hours==0) 2 @else {{$total_hours}} @endif</td>
-                            @else
-                                <td></td>
-                            @endif
+
 
                             <td>({{$item->mgr_emp_number->first_name}} {{$item->mgr_emp_number->last_name}}- {{$item->mgr_emp_number->employee_number}})</td>
                             <td>({{$item->admin_emp_number->first_name}} {{$item->admin_emp_number->last_name}}- {{$item->admin_emp_number->employee_number}})</td>
@@ -262,6 +261,7 @@
     $(document).ready(function () {
         $('#example3').DataTable({
             dom: 'Bfrtip',
+            order: [[6, 'desc']],
             buttons: ['excel'],
             "pageLength": 5
         });
