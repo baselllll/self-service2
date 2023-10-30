@@ -28,6 +28,13 @@ class MangerLogicService
         return $this->mainOracleQueryRepo->GetnotificationOfEmployee($emp_number,$person_id);
     }
 
+    public function GetReplacmentDetailsSpecificDepartment($person_id=null){
+        return $this->mainOracleQueryRepo->GetReplacmentDetailsSpecificDepartment($person_id);
+    }
+    public function GetPhoneEmpFromPersonId($person_id=null){
+        return $this->mainOracleQueryRepo->GetPhoneEmpFromPersonId($person_id);
+    }
+
 
     public function ApproveRequest($notif_id,$transaction_id,$note,$type){
         return $this->mainOracleQueryRepo->ApproveRequest($notif_id,$transaction_id,$note,$type);
@@ -35,7 +42,8 @@ class MangerLogicService
     }
     public function RejectRequest($notif_id,$transaction_id,$note,$type){
         return    $this->mainOracleQueryRepo->RejectRequest($notif_id,$transaction_id,$note,$type);
-
-
+    }
+    public function GetEOS(){
+        return $this->mainOracleQueryRepo->GetEOS();
     }
 }

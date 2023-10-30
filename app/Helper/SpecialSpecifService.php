@@ -42,8 +42,8 @@ class SpecialSpecifService
             "67"=>'haji.png',
             "68"=>'marige.png',
             "70"=>'Sick Leave.jpg',
-            "2068"=>'Permission Work.png',
-            "2067"=>'Personal Permission.jpg',
+            "2066"=>'Permission Work.png',
+            "2068"=>'Personal Permission.jpg',
             "2064"=>'death idah.jpg',
             "2063"=>'death.jpg',
             "2065"=>'omoma.jpg',
@@ -57,11 +57,19 @@ class SpecialSpecifService
     public function GetAllServiceDifferent(){
         return  [
             'Absence_Services'=>['id'=>'AS5','name'=>"Absence Services","image"=>"absence_service.png",'condition'=>''],
+            'EOS'=>['id'=>'EOS','name'=>"EOS","image"=>"EOS.jpg",'condition'=>''],
             'Certificate_Services'=>['id'=>'CS6','name'=>"Certificate Services","image"=>"certificate_service.png",'condition'=>'disabled'],
             'LoanServices'=>['id'=>'Lo7','name'=>"Loan Services","image"=>"loan.jpg",'condition'=>'disabled'],
             'Letter Services'=>['id'=>'LS8','name'=>"Letter Services","image"=>"letter.png",'condition'=>'disabled'],
             'Insurance'=>['id'=>'I9','name'=>"Insurance","image"=>"insurance.jpg",'condition'=>'disabled'],
             'Other'=>['id'=>'Other10','name'=>"Other","image"=>"other.png",'condition'=>'disabled'],
+
+        ];
+    }
+    public function GetAllPendingDifferent(){
+        return  [
+            'Pending_Absence_Services'=>['id'=>'serv_p_1','name'=>"Absence Pending Services","image"=>"abcence_pending.jpg",'condition'=>'disabled','status_request_pending'=>'absence'],
+            'Pending_Eos_Services'=>['id'=>'serv_p_2','name'=>"Eos Pending Services","image"=>"eos_pending.jpg",'condition'=>'disabled','status_request_pending'=>'eos'],
         ];
     }
 }

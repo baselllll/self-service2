@@ -161,63 +161,79 @@ class ServiceDetailController extends Controller
        $employeeForFile = $employee->employee_number;
         $lastRecordSameService = $this->detailsEmployeeService->getLastSameService($employee->employee_number,$request->absence_type);
         if (isset($lastRecordSameService[0])){
-            if ($lastRecordSameService[0]->absence_end_date > Carbon::now()->format('Y-m-d') and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
-                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
-                return redirect()->to('profile-employee');
+            if($lastRecordSameService[0]->absence_type ==AppKeysProps::Sick_Leave()->value or $lastRecordSameService[0]->absence_type==AppKeysProps::Emergency_Leave()->value){
+
+            }else{
+                if ($lastRecordSameService[0]->absence_end_date > Carbon::now()->format('Y-m-d') and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
+                    Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                    return redirect()->to('profile-employee');
+                }
             }
+
+
         }
         $lastRecord = $this->detailsEmployeeService->GetLastRecordFromCustomNotifyWF($employee->employee_number);
         $lastRecordApproved = $this->detailsEmployeeService->GetLastRecordApprovedFromCustomNotifyWF($employee->employee_number);
         $lastRecordApproved_Two_Approvals = $this->detailsEmployeeService->GetLastRecordApprovedForTwoApprovalsFromCustomNotifyWF($employee->employee_number);
-        if (isset($lastRecordApproved)){
-            if ($request->start_date <= $lastRecordApproved->absence_end_date && $request->start_date >= $lastRecordApproved->absence_start_date) {
-                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
-                return redirect()->to('profile-employee');
+        if($lastRecord->absence_type ==AppKeysProps::Sick_Leave()->value or $lastRecord->absence_type==AppKeysProps::Emergency_Leave()->value){
+
+        }else{
+            if (isset($lastRecordApproved)){
+                if ($request->start_date <= $lastRecordApproved->absence_end_date && $request->start_date >= $lastRecordApproved->absence_start_date) {
+                    Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                    return redirect()->to('profile-employee');
+                }
+            }
+            if (isset($lastRecordApproved_Two_Approvals)){
+                if ($request->start_date <= $lastRecordApproved_Two_Approvals->absence_end_date && $request->start_date >= $lastRecordApproved_Two_Approvals->absence_start_date) {
+                    Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                    return redirect()->to('profile-employee');
+                }
             }
         }
-        if (isset($lastRecordApproved_Two_Approvals)){
-            if ($request->start_date <= $lastRecordApproved_Two_Approvals->absence_end_date && $request->start_date >= $lastRecordApproved_Two_Approvals->absence_start_date) {
-                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
-                return redirect()->to('profile-employee');
-            }
-        }
+
 
 
 
 
         if(isset($lastRecord)){
-            if (isset($lastRecordSameService[0])){
-                if($request->absence_type == $lastRecord->absence_type and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
+            if($lastRecord->absence_type ==AppKeysProps::Sick_Leave()->value or $lastRecord->absence_type==AppKeysProps::Emergency_Leave()->value){
 
-                    if($request->start_date < $lastRecord->absence_end_date or $request->start_date < $lastRecord->absence_start_date){
-                        Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
-                        return redirect()->to('profile-employee');
-                    }
-                    if($request->start_date > $lastRecord->absence_end_date and $request->start_date < $lastRecord->absence_end_date){
-                        Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
-                        return redirect()->to('profile-employee');
+            }else{
+                if (isset($lastRecordSameService[0])){
+                    if($request->absence_type == $lastRecord->absence_type and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false){
+
+                        if($request->start_date < $lastRecord->absence_end_date or $request->start_date < $lastRecord->absence_start_date){
+                            Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                            return redirect()->to('profile-employee');
+                        }
+                        if($request->start_date > $lastRecord->absence_end_date and $request->start_date < $lastRecord->absence_end_date){
+                            Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate2_message'));
+                            return redirect()->to('profile-employee');
+                        }
                     }
                 }
-            }
-          if($request->absence_type == $lastRecord->absence_type and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved")){
-                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
-                return redirect()->to('profile-employee');
-            }
-           if ($lastRecord->no_of_approvals== 3 and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved" or $lastRecord->approval_status== "Admin Mgr Approved")){
-               Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
-                return redirect()->to('profile-employee');
-            }
-
-            if ($lastRecord->no_of_approvals== 2 and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved")){
-                Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
-                return redirect()->to('profile-employee');
-            }
-            if (isset($lastRecordSameService[0])){
-                if(($request->start_date < $lastRecord->absence_end_date or $request->start_date < $lastRecord->absence_start_date) and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false ){
+                if($request->absence_type == $lastRecord->absence_type and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved")){
                     Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
                     return redirect()->to('profile-employee');
                 }
+                if ($lastRecord->no_of_approvals== 3 and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved" or $lastRecord->approval_status== "Admin Mgr Approved")){
+                    Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
+                    return redirect()->to('profile-employee');
+                }
+
+                if ($lastRecord->no_of_approvals== 2 and ($lastRecord->approval_status == "Pending Approval" or $lastRecord->approval_status== "Manager Approved")){
+                    Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
+                    return redirect()->to('profile-employee');
+                }
+                if (isset($lastRecordSameService[0])){
+                    if(($request->start_date < $lastRecord->absence_end_date or $request->start_date < $lastRecord->absence_start_date) and str_contains($lastRecordSameService[0]->approval_status,'Rejected') == false ){
+                        Alert::warning(__('messages.added_service_validate1_title'),__('messages.added_service_validate1_message'));
+                        return redirect()->to('profile-employee');
+                    }
+                }
             }
+
         }
         $fileName=null;
         if ($request->hasFile('upload_files')) {
@@ -269,11 +285,24 @@ class ServiceDetailController extends Controller
     }
     public function AddSpecialServiceDetail(Request $request){
         $employee =session()->get('employee');
-        if(isset($request->service_type)){
-            $request['service_type'] = 'loan';
-        }
+        $person_id = $employee->person_id;
+        $employee_number = $employee->employee_number;
+        $flex_name = $request->flex_name;
+        $service_type = $request->service_type;
+        $resignation_Reason = $request->Resignation_Reason;
+        $notified_EOS_Date= $request->Notified_EOS_Date;
+        $actual_EOS_Date = $request->Actual_EOS_Date;
+        $notice_Period = $request->Notice_Period;
+        $data_feilds = [
+            'resignation_Reason'=>$resignation_Reason,
+            'notified_EOS_Date'=>$notified_EOS_Date,
+            'actual_EOS_Date'=>$actual_EOS_Date,
+            'notice_Period'=>$notice_Period,
+        ];
         $request['data_attribute_form'] =json_encode( $request->except(['_token','service_type']));
-        $this->detailsEmployeeService->InsertSpecialSeviceTable($request->all());
+        $this->detailsEmployeeService->InsertTransctionProcessWorkFlow_Special(
+            $person_id,$employee_number,null,null,$flex_name,$request->flex_id,null,null,null,null,null,null,$service_type,$data_feilds
+        );
         Alert::success("Employee Name: {$employee->employee_name}  ",__('messages.added_service_success'));
         return redirect('home');
     }

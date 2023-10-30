@@ -10,6 +10,7 @@
     </button>
 
     <div style="margin-left: 64px;">
+
         <ul class="navbar-nav ml-auto">
             <!-- Messages Dropdown Menu -->
             @if(session()->has('employee') and session()->get('user_type')!=="top_mng")
@@ -17,7 +18,7 @@
                     <a class="nav-link" data-toggle="dropdown" href="#" style="position: relative;">
                     <span class="badge badge-warning navbar-badge badge-above">
                         @if(isset($requested_notification) and count($requested_notification) > 0)
-                            @if( $requested_notification[0]->empno==session()->get('employee')->employee_number)
+                            @if( $requested_notification[0]==session()->get('employee')->employee_number)
                                 {{count($requested_notification)}}
                             @else
                                 0
@@ -30,6 +31,8 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <!-- Your dropdown menu content here -->
+
+
                         @if(isset($requested_notification))
                             @foreach($requested_notification as $item)
                                 @if($item->empno==session()->get('employee')->employee_number)
@@ -85,7 +88,7 @@
                 @endif
                 @if( session()->get("taswaya_emp")==true)
                     <a style="font-weight: bold;text-decoration: underline"  href="{{route('taswaya')}}" class="nav-item nav-link">@lang('messages.taswaya')</a>
-                    <a style="font-weight: bold;text-decoration: underline"  href="{{route('clearance')}}" class="nav-item nav-link">@lang('messages.clearance')</a>
+                    <a style="font-weight: bold;text-decoration: underline"  href="{{route('clearance')}}" class="nav-item nav-link">@lang('messages.EOS')</a>
                 @endif
                 <a style="font-weight: bold;text-decoration: underline" href="{{route('help')}}" class="nav-item nav-link">@lang('messages.help')</a>
                 <a style="font-weight: bold;" href="{{route('logout')}}" class="btn btn-primary" id="logout_btn">@lang('messages.logout')<i class="fa fa-arrow-right ms-3"></i></a>

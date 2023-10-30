@@ -52,13 +52,60 @@ class SmsVerifyHelper
     //maro integration
 
 
+//    function sendSMS($phone_number, $message, $otp = null)
+//    {
+//        if ($this->isArabicMessage($message)) {
+//            $message = " رمز التحقق : $otp للدخول للخدمة الذاتية ";
+//        } else {
+//            if (isset($otp)) {
+//                $message = "OTP:$otp $message";
+//            }
+//        }
+//
+//        $base_url = "https://mora-sa.com/api/v1/sendsms";
+//        $api_key = "7ff998d245c5adf59d6dd8113e2c1bc3ac65c212";
+//        $username = "ALajmiCo";
+//        $sender = "AlajmiCo";
+//
+//        $numbers = "&numbers=" . rawurlencode($phone_number);
+//        $api_key_param = "api_key=" . $api_key;
+//        $username_param = "username=" . $username;
+//        $message_param = "message=" . rawurlencode($message);
+//        $sender_param = "sender=" . $sender;
+//
+//        $url = $base_url . "?" . $api_key_param . "&" . $username_param . "&" . $message_param . "&" . $sender_param . $numbers;
+//        $ch = curl_init();
+//        curl_setopt($ch, CURLOPT_URL, $url);
+//
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+//            'Content-type: application/json',
+//        ]);
+//        $response = curl_exec($ch);
+//
+//
+//        if ($response === false) {
+//            $this->sendSMS2($phone_number,$message,$otp);
+//        } else {
+//            $responseData = json_decode($response, true);
+//            if (isset($responseData['data']['message'])){
+//                if ($responseData['data']['message'] === "تم استلام الارقام بنجاح") {
+//                }else{
+//                    $this->sendSMS2($phone_number,$message,$otp);
+//                }
+//            }
+//        }
+//        curl_close($ch);
+//    }
     function sendSMS($phone_number, $message, $otp = null)
     {
         if ($this->isArabicMessage($message)) {
             $message = " رمز التحقق : $otp للدخول للخدمة الذاتية ";
         } else {
             if (isset($otp)) {
-                $message = "$message : $otp";
+                $message = "OTP:$otp $message";
             }
         }
 
@@ -74,29 +121,7 @@ class SmsVerifyHelper
         $sender_param = "sender=" . $sender;
 
         $url = $base_url . "?" . $api_key_param . "&" . $username_param . "&" . $message_param . "&" . $sender_param . $numbers;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-type: application/json',
-        ]);
-        $response = curl_exec($ch);
-
-        if ($response === false) {
-            $this->sendSMS2($phone_number,$message,$otp);
-        } else {
-            $responseData = json_decode($response, true);
-            if (isset($responseData['data']['message'])){
-                if ($responseData['data']['message'] === "تم استلام الارقام بنجاح") {
-                }else{
-                    $this->sendSMS2($phone_number,$message,$otp);
-                }
-            }
-        }
-        curl_close($ch);
+        $this->processSms($url,$phone_number,$message,$otp);
     }
 
 
@@ -266,5 +291,19 @@ class SmsVerifyHelper
         }
     }
 
+    public function processSms($url,$phone_number,$message,$otp){;
+        $response = file_get_contents($url);
+        if ($response === false) {
+            $this->sendSMS2($phone_number,$message,$otp);
+        } else {
+            $responseData = json_decode($response, true);
+            if (isset($responseData['data']['message'])){
+                if ($responseData['data']['message'] === "تم استلام الارقام بنجاح") {
+                }else{
+                    $this->sendSMS2($phone_number,$message,$otp);
+                }
+            }
+        }
+    }
 
 }

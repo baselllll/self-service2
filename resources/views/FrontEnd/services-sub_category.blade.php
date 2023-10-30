@@ -17,21 +17,27 @@
 
 <div class="container">
     <br/>
-    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s" >
         <h6 class="section-title bg-white text-center text-primary px-3">@lang('messages.Services') </h6>
     </div>
     <br>
     <div class="text-center wow fadeInUp" data-wow-delay="0.1s"></div>
     <br>
-    <div class="row">
-        @foreach($loan_services as $service)
-            <div class="col-lg-3 col-md-6 wow fadeInUp service-card" data-wow-delay="0.1s">
+    <div class="row" style="    margin-right: -137px;">
+        @php
+          if(isset($get_eos)){
+          $sevices = $get_eos;
+          }
+        @endphp
+        @foreach($sevices as $service)
+
+            <div class="col-lg-3 col-md-6 wow fadeInUp service-card" data-wow-delay="0.1s" s>
                 <div class="team-item bg-light">
                     <div class="overflow-hidden">
                         <a target="_blank"
                                 href="{{route('get-attribute-special-service',['flex_id'=>$service->id_flex_num,'service_type'=>$service->service_type,'main_service_request_sub'=>$service->structure_name])}}">
 
-                            <img class="img-fluid" src="{{ asset("img/" . 'loan.jpg') }}" alt="">
+                            <img class="img-fluid" src="{{ asset("img/" . $service->image) }}" alt="">
                         </a>
                     </div>
 

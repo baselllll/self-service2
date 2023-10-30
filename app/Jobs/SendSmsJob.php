@@ -31,7 +31,7 @@ class SendSmsJob implements ShouldQueue
         $sms = new SmsVerifyHelper();
         $name = explode(" ", $name);
         try {
-            $message = "Dear Mr. $name[0] , EmpNo ( $emp_requested_number ) Requested ( $absence_type ) TransID ( $transaction_id ) , Check system";
+            $message = "Mr.$name[0] Check system, Emp:$emp_requested_number Request:$transaction_id $absence_type";
 
             if (substr($phone_number, 0, 1) === '0')
                 $cur_zero_number = '966' . substr($phone_number, 1);

@@ -24,6 +24,18 @@ use Spatie\Enum\Enum;
  * @method static self WorkPremission_absence_type_id()
  * @method static self Sickleave_absence_type_id()
  * @method static self Emergency_absence_type_id()
+ * @method static self Absence_Services()
+ * @method static self Certificate_Services()
+ * @method static self Letter_Services()
+ * @method static self Loan_Services()
+ * @method static self Insurance()
+ * @method static self Other()
+ * @method static self EOS()
+ * @method static self Resignation()
+ * @method static self Non_Renewal_contr()
+ * @method static self Annual_Leave()
+ * @method static self Emergency_Leave()
+ * @method static self Sick_Leave()
  */
 class AppKeysProps extends Enum
 {
@@ -48,7 +60,19 @@ class AppKeysProps extends Enum
             'PersonnalPremission_absence_type_id'=>2068,
             'WorkPremission_absence_type_id'=>2063,
             'Sickleave_absence_type_id'=>70,
-            'Emergency_absence_type_id'=>1061
+            'Emergency_absence_type_id'=>1061,
+            'Absence_Services'=>'Absence Services',
+            'Certificate_Services'=>'Certificate Services',
+            'Letter_Services'=>'Letter Services',
+            'Loan_Services'=>'Loan Services',
+            'Insurance'=>'Insurance',
+            'Other'=>'Other',
+            'EOS'=>'EOS',
+            'Resignation'=>'Resignation',
+            'Non_Renewal_contr'=>'Non_Renewal_contr',
+            'Annual_Leave'=>'Annual Leave',
+            'Emergency_Leave'=>'Emergency Leave',
+            'Sick_Leave'=>'Sick Leave',
         ];
     }
 }

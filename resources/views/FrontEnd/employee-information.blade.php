@@ -48,6 +48,9 @@
                         <p>@lang('messages.Job') : <span>{{$employee->job}}</span></p>
                         <p>@lang('messages.Position') : <span>{{$employee->position}}</span></p>
                         <p>@lang('messages.Location') : <span>{{$employee->location}}</span></p>
+                        <p>@lang('messages.Cost_center') : <span>{{$cost_center}}</span></p>
+                        <p>@lang('messages.email_employee') : <span>{{$employee_more_details->email_address}}</span></p>
+                        <p>@lang('messages.phone_number') : <span>{{$employee_more_details->phone_number}}</span></p>
                     </div>
                 </div>
             </div>

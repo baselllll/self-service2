@@ -85,19 +85,17 @@
                                 <td>{{$item->email_address}}</td>
                                 @if($item->no_of_approvals=="3")
                                     @if($item->added_absence_check=="N" and  !str_contains($item->approval_status,'Rejected') and !str_contains($item->top_management_approval_status,'Pending'))
-                                        <td><button id="insert_absence" type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary">Insert</button></td>
+                                        <td><button type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary insert_absence">Insert</button></td>
                                     @else
                                         <td></td>
                                     @endif
+                                @endif
+                                @if($item->added_absence_check=="N")
+                                    <td><button  type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary insert_absence">Insert</button></td>
+                                @else
+                                    <td></td>
                                 @endif
 
-                                @if($item->no_of_approvals=="2")
-                                    @if($item->added_absence_check=="N" and  !str_contains($item->approval_status,'Rejected') and !str_contains($item->admin_mgr_approval_status,'Pending'))
-                                        <td><button  type="button" data-trax="{{$item->transaction_id}}" class="btn btn-primary insert_absence">Insert</button></td>
-                                    @else
-                                        <td></td>
-                                    @endif
-                                @endif
 
 
                             </tr>

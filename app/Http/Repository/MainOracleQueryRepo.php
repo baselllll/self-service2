@@ -5,6 +5,7 @@ namespace App\Http\Repository;
 use App\Enums\AppKeysProps;
 use App\Helper\SmsVerifyHelper;
 use App\Helper\SpecialSpecifService;
+use App\Helper\TaswayaLayer;
 use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +18,10 @@ class MainOracleQueryRepo
     protected $top_mngSigniture;
     protected $specialSpecifService;
     protected $sms_send;
+    protected $notify;
     public function __construct()
     {
+        $this->notify = new \App\Helper\NotifyMangerService();
         $this->conn = oci_connect('selfservice', 'Ajmi##dba##Nas', '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.15.225)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=prod)))');
         $this->admin_mngSigniture = AppKeysProps::AdminManger()->value;
         $this->top_mngSigniture = AppKeysProps::TopManger()->value;
@@ -235,8 +238,14 @@ WHERE     ppx.person_id = ppa.person_id
         }else{
             $calculate_differnce_day = DB::raw("TO_DATE('$date_end') - TO_DATE('$date_start')+1");
         }
+        $absence_id_sequence = DB::select("select hr.per_absence_attendances_s.NEXTVAL from dual")[0]->nextval;
+        $start_date_absence = DB::raw("TO_DATE('$date_start')");
+        $date_end_absence = DB::raw("TO_DATE('$date_end')");
+        $sys_date_absence =DB::raw('SYSDATE');
+//        DB::statement("Begin xx_custom_pkg_mgr1.xxajmi_sshr_absence_insert($absence_id_sequence,0,$absence_attendance_type_id,$person_id,$authorising_person_id,$replaced_employee,$date_notification,'$attribute_category',$start_date_absence,$date_end_absence,$calculate_differnce_day,0,800,$sys_date_absence,8001,-1,8001,$sys_date_absence,'$comments','$status','$timePart_start_date','$timePart_end_date',0,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);End;");
 
-        return DB::table('hr.per_absence_attendances')->insert([
+
+      DB::table('hr.per_absence_attendances')->insert([
             'absence_attendance_id' => DB::raw('hr.per_absence_attendances_s.NEXTVAL'),
             'business_group_id' => 0,//static not changed
             'absence_attendance_type_id' => $absence_attendance_type_id,
@@ -324,7 +333,8 @@ ORDER BY application_id,
          DECODE (enabled_flag,  'Y', 1,  'N', 2),
          segment_num");
     }
-    public function InsertSpecialSeviceTable($data){
+    public function
+    InsertSpecialSeviceTable($data){
         $employee_number = session()->get('employee')->employee_number;
         $person_id = session()->get('employee')->person_id;
         $transaction_id_unique = DB::select("select transaction_seq.NEXTVAL from dual")[0]->nextval;
@@ -681,11 +691,17 @@ EOD;
                 'information13' => $timePart_end_date,
                 'information14' => $difference_hours,
                 'information20' => 'absence',
+                'resignation_reason' => null,
+                'notified_eos_date' => null,
+                'actual_eos_date' => null,
+                'notice_period_days' => null,
             ]);
             DB::commit();
 
            // lanuch the custom workflow
             $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
+
+
 
             if (isset($fileName)){
                 DB::statement("UPDATE xxajmi_notif
@@ -701,6 +717,8 @@ EOD;
             if($super_visor_can_request_admin_manger==true){
                 $this->approvedAdminMangerIfRequestedService($transaction_id_unique);
             }
+
+            $this->notify->handeloneByone($transaction_id_unique);
 
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -1052,7 +1070,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $manager_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $manager_name[0] you approve Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1086,7 +1104,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $admin_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $admin_name[0] you approve Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
 
 
@@ -1094,7 +1112,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     DB::rollback();
                 }
             }
-
+            $this->notify->handeloneByone($transaction_id);
         }
         elseif ($xxajmi_notif->no_of_approvals == 3) {
             if ($type == "Manager") {
@@ -1119,13 +1137,14 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $this->CallNotoficationAfterChangeStaus($transaction_id, "Approved", "EMP_MGR");
 
                     $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
+                    $phone_number = $this->GetPhoneEmpFromPersonId($xxajmi_notif->mgr_person_id)[0]->phone_number;
                     $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
                     $manger_data = $this->GetEmolyeeDataFromPersonId($xxajmi_notif->mgr_person_id);
                     $manager_name = explode(' ',$manger_data->full_name);
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $manager_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $manager_name[0] you Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1159,7 +1178,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $admin_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $admin_name[0] you approve Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
                 } catch (\Exception $e) {
                     DB::rollback();
@@ -1167,7 +1186,6 @@ where employee_number = '$employee_number' and reg_status ='Y'
             }
             if ($type == "TopMgr") {
                 try {
-
                     if ($xxajmi_notif->delegate_to_emp and \Carbon\Carbon::now() >= $xxajmi_notif->delegate_from_date and \Carbon\Carbon::now() <= $xxajmi_notif->delegate_to_date){
                         DB::statement("UPDATE xxajmi_notif
                  SET approval_status = 'Approved',
@@ -1181,9 +1199,29 @@ where employee_number = '$employee_number' and reg_status ='Y'
                      top_management_approval_status ='Approved' , top_mgmt_approval_note = '$note' , update_date=SYSDATE
                WHERE transaction_id = $transaction_id");
                     }
+                    if($xxajmi_notif->absence_type == AppKeysProps::Non_Renewal_contr()->value or $xxajmi_notif->absence_type ==AppKeysProps::Resignation()->value or $xxajmi_notif->absence_type ==AppKeysProps::Emergency_Leave()->value or $xxajmi_notif->absence_type ==AppKeysProps::Annual_Leave()->value){
+                        $emp_requested_number = $xxajmi_notif->empno;
+                        DB::statement("Begin xx_custom_pkg_mgr1.xxajmi_sshr_prepare_clearance($transaction_id,'$emp_requested_number','End of Service'); End;");
+                        $taswaya_send_message = new TaswayaLayer();
+                        $emp_tawsys = $taswaya_send_message->Employee_Avalabile_Person_id();
 
-                    $this->XjmRecordProcess($transaction_id, 'Y');
-                    $this->sms_send->EditOnTemplate($transaction_id);
+                        foreach ($emp_tawsys as $emp){
+                            $phone_number = $this->GetPhoneEmpFromPersonId($emp)[0]->phone_number;
+                            $phone_number = $this->sms_send->filterPhoneNumber($phone_number);
+                            $top_data = $this->GetEmolyeeDataFromPersonId($emp);
+                            $tawsya_name = explode(' ',$top_data->full_name);
+                            $emp_requested_number = $xxajmi_notif->empno;
+                            $transaction_id = $xxajmi_notif->transaction_id;
+                            $absence_type = $xxajmi_notif->absence_type;
+                            $message = "Mr $tawsya_name[0] initial clearance for Request:$transaction_id $absence_type for Emp:$emp_requested_number";
+                            $this->sms_send->sendSMS($phone_number,$message);
+                        }
+                    }else{
+                        //for absence only
+                        $this->XjmRecordProcess($transaction_id, 'Y');
+                        $this->sms_send->EditOnTemplate($transaction_id);
+                    }
+
                     //send notification
                     $this->CallNotoficationAfterChangeStaus($transaction_id, "Approved", "TOP_MGMT");
 
@@ -1195,7 +1233,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $top_name[0] you approve Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $top_name[0] you approve Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1203,9 +1241,31 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     DB::rollback();
                 }
             }
+            $this->notify->handeloneByone($transaction_id);
         }
         $this->CallToBackupAfterUpdate($transaction_id);
+
         return 'true';
+    }
+    public function EOSiNSERTIONPROCESS($p_person_id,$eos_service,$actual_date,$transaction_id,$actualTerminationDate,$noticePeriodExemption,$deptRecovery){
+        $actualTerminationDate = Carbon::create($actualTerminationDate)->format('d-M-Y');
+        if ($eos_service==AppKeysProps::Resignation()->value){
+            $eos_service = 'RESIGNATION';
+        }
+        if ($eos_service==AppKeysProps::Non_Renewal_contr()->value){
+            $eos_service = 'NONEWCONTRACT';
+        }
+        //'RESIGNATION' or 'NONEWCONTRACT'
+        try {
+            DB::statement("ALTER SESSION SET NLS_DATE_FORMAT = 'DD-MON-RRRR'");
+            DB::statement("Begin apps.xxajmi_sshr_eos_p($p_person_id,'$eos_service',TO_DATE('$actualTerminationDate', 'DD-MON-RR'),'$deptRecovery','$noticePeriodExemption'); End;");
+            DB::statement("UPDATE xxajmi_notif
+    SET update_date=SYSDATE,eos_taswiah_status='1'
+    WHERE transaction_id = $transaction_id");
+        }catch (\Exception  $exception){
+            dd($exception->getMessage());
+            DB::rollBack();
+        }
     }
 
     public function RejectRequest($notif_id, $transaction_id, $note, $type)
@@ -1239,7 +1299,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $manager_name[0] you reject Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $manager_name[0] you reject Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1271,7 +1331,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $admin_name[0] you Reject Request ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $admin_name[0] you Reject Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                 } catch (\Exception $e) {
@@ -1304,7 +1364,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
                     $emp_requested_number = $xxajmi_notif->empno;
                     $transaction_id = $xxajmi_notif->transaction_id;
                     $absence_type = $xxajmi_notif->absence_type;
-                    $message = "Dear $top_name[0] you  reject ($transaction_id) of Service ($absence_type) from Emp# ($emp_requested_number)";
+                    $message = "Mr $top_name[0] you reject Request:$transaction_id $absence_type for Emp:$emp_requested_number";
                     $this->sms_send->sendSMS($phone_number,$message);
 
                     return 'true';
@@ -1323,6 +1383,7 @@ where employee_number = '$employee_number' and reg_status ='Y'
 
     public function XjmRecordProcess($transaction_id, $status)
     {
+
         //delete from xxajmi_ss_transactions,hr_api_transactions
         $xxajmi_notif_record = DB::table("xxajmi_notif")->select('*')->where('transaction_id', '=', $transaction_id)->first();
         $hr_api_transactions_record = DB::table("xxajmi_ss_transactions")->select('*')->where('transaction_id', $transaction_id)->first();
@@ -1342,8 +1403,45 @@ where employee_number = '$employee_number' and reg_status ='Y'
             $xxajmi_notif_record->time_end,
             $xxajmi_notif_record->absence_hours,
         );
+
+        DB::statement("Begin xx_custom_pkg_mgr1.xxajmi_sshr_update_ins_status($transaction_id) ;End;");
+
+
+
         DB::table('xxajmi_ss_transactions')->where('transaction_id', $xxajmi_notif_record->transaction_id)->delete();
         DB::table('xxajmi_ss_transactions')->where('transaction_id', $xxajmi_notif_record->transaction_id)->delete();
+        return 'true';
+
+    }
+
+
+    public function XjmRecordProcess_manully($transaction_id, $status)
+    {
+        //delete from xxajmi_ss_transactions,hr_api_transactions
+        $xxajmi_notif_record = DB::table("xxajmi_notif")->select('*')->where('transaction_id', '=', $transaction_id)->first();
+        $person_id_emp = $this->GetPersonID($xxajmi_notif_record->empno)->person_id;
+        $absence_type_name =  $xxajmi_notif_record->absence_type;
+        $absenc_type_id = DB::select("select ABSENCE_ATTENDANCE_TYPE_ID  as abs_type_id
+             from PER_ABS_ATTENDANCE_TYPES_TL
+             where language ='US'
+             and name  = '$absence_type_name'")[0]->abs_type_id;
+        $this->InsertDataInAbsenceTable_manually(
+            $absenc_type_id,
+            $person_id_emp,
+            $xxajmi_notif_record->absence_start_date,
+            $xxajmi_notif_record->absence_end_date,
+            null,
+            null,
+            $xxajmi_notif_record->replacement_no,
+            $xxajmi_notif_record->mgr_person_id,
+            DB::raw('SYSDATE'),
+            $xxajmi_notif_record->absence_type,
+            null, ['ATTRIBUTE12' => $status, 'ATTRIBUTE13' => $status],
+            $xxajmi_notif_record->time_start,
+            $xxajmi_notif_record->time_end,
+            $xxajmi_notif_record->absence_hours,
+        );
+        DB::statement("Begin xx_custom_pkg_mgr1.xxajmi_sshr_update_ins_status($transaction_id) ;End;");
         return 'true';
 
     }
@@ -1358,6 +1456,35 @@ where employee_number = '$employee_number' and reg_status ='Y'
         return DB::select("UPDATE xxajmi_notif
 SET MGR_REJECT_NOTE = $note
 WHERE TRANSACTION_ID=$transaction_id");
+    }
+  public function feature_new()
+    {
+        return DB::table("sshr_new_features")->first();
+    }
+ public function add_details_feature($data)
+    {
+
+        try {
+            $id=null;
+            if (!isset($data['feature_id'])){
+                $id = DB::select("select xxajmi_ssr_feat_seq.NEXTVAL from dual")[0]->nextval;
+
+
+            }else{
+                $id = $data['feature_id'];
+            }
+           $data_details = [
+                'title' => $data['title_feature'],
+                'description' => $data['desc_feature'],
+                'status' => $data['status_feature'],
+                'creation_date' => Carbon::now(),
+                'feature_id' =>$id
+            ];
+
+            DB::table('SELFSERVICE.sshr_new_features')->updateOrInsert(['feature_id'=>$id],$data_details);
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
     }
 
 
@@ -1473,7 +1600,7 @@ WHERE fifs.id_flex_num ='$flex_id'");
     }
     public function getAnnualApprovedForClearance(){
        return DB::table('xxajmi_notif')
-            ->where('absence_type', '=', 'Annual Leave')
+            ->where('service_type', '=', 'eos')
             ->where('approval_status', '=', 'Approved')->get();
     }
     public function approvedMangerIfRequestedService($transaction_id){
@@ -1528,4 +1655,131 @@ WHERE fifs.id_flex_num ='$flex_id'");
             DB::rollBack();
         }
     }
+    public function GetEOS(){
+        return DB::statement("select meaning
+from apps.fnd_lookup_values
+where lookup_type = 'XXAJMI_SSHR_EOS_REASONS_TYPE'
+and language='US'");
+    }
+
+
+    public function InsertTransctionProcessWorkFlow_Special($person_id, $employee_number, $date_start, $date_end, $absence_type, $absence_type_id, $comments, $replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName,$service_type,$data_feilds)
+    {
+        $transaction_id_unique = DB::select("select xxajmi_trxn_s.NEXTVAL from dual")[0]->nextval;
+        try {
+            DB::beginTransaction();
+            DB::table('xxajmi_ss_transactions')->insert([
+                'transaction_id' => $transaction_id_unique,
+                'creator_person_id' => $person_id,
+                'created_by' => 8001,
+                'creation_date' => DB::raw('SYSDATE'),
+                'last_update_date' => DB::raw('SYSDATE'),
+                'last_updated_by' => 8001,
+                'information1' => $date_start,
+                'information2' => $date_end,
+                'information5' => $absence_type_id,
+                'information6' => $absence_type,//Unpaid Leave || paid Leave
+                'information8' => 3,
+                'information9' => 'CONFIRMED',//Confirmed or Planned
+                'information10' => $replaced_employee,
+                'information11' => $comments,//Confirmed or Planned
+                'information12' => $timePart_start_date,
+                'information13' => $timePart_end_date,
+                'information14' => $difference_hours,
+                'information20' => strtolower($service_type),
+                'resignation_reason' => $data_feilds['resignation_Reason'],
+                'notified_eos_date' => $data_feilds['notified_EOS_Date'],
+                'actual_eos_date' => $data_feilds['actual_EOS_Date'],
+                'notice_period_days' => $data_feilds['notice_Period'],
+            ]);
+            DB::commit();
+
+            // lanuch the custom workflow
+            $this->FireCustomWorkflowOfSSHR($transaction_id_unique);
+
+
+            if (isset($fileName)){
+                DB::statement("UPDATE xxajmi_notif
+                 SET document_name='$fileName'
+               WHERE transaction_id = $transaction_id_unique");
+            }
+
+            $super_visor_can_request =  session()->get('super_visor_can_request');
+            $super_visor_can_request_admin_manger =  session()->get('super_visor_can_request_admin_manger');
+            if($super_visor_can_request==true){
+                $this->approvedMangerIfRequestedService($transaction_id_unique);
+            }
+            if($super_visor_can_request_admin_manger==true){
+                $this->approvedAdminMangerIfRequestedService($transaction_id_unique);
+            }
+
+        } catch (\Exception $ex) {
+            DB::rollBack();
+        }
+
+    }
+
+
+    public function InsertDataInAbsenceTable_manually($absence_attendance_type_id, $person_id, $date_start, $date_end, $occurrence, $comments, $replaced_employee, $authorising_person_id, $date_notification, $attribute_category, $attribute1, $additional_data,$timePart_start_date,$timePart_end_date,$difference_hours)
+    {
+        $status = (array_key_exists('ATTRIBUTE12', $additional_data) && $additional_data['ATTRIBUTE12'] === 'N') ? 'Rejected' : 'Approved';
+
+        if ($absence_attendance_type_id == AppKeysProps::PersonnalPremission_absence_type_id()->value || $absence_attendance_type_id == AppKeysProps::WorkPremission_absence_type_id()->value) {
+            $calculate_differnce_day = null;
+        }else{
+            $calculate_differnce_day = DB::raw("TO_DATE('$date_end') - TO_DATE('$date_start')+1");
+        }
+        $absence_id_sequence = DB::select("select hr.per_absence_attendances_s.NEXTVAL from dual")[0]->nextval;
+
+         DB::table('hr.per_absence_attendances')->insert([
+            'absence_attendance_id' =>$absence_id_sequence,
+            'business_group_id' => 0,//static not changed
+            'absence_attendance_type_id' => $absence_attendance_type_id,
+            'person_id' => $person_id,
+            'authorising_person_id' => $authorising_person_id,
+            'replacement_person_id' => $replaced_employee,
+            'date_notification' => $date_notification,
+            'attribute_category' => $attribute_category,
+            'date_start' => DB::raw("TO_DATE('$date_start')"),
+            'date_end' => DB::raw("TO_DATE('$date_end')"),
+            'absence_days' => $calculate_differnce_day,
+            'occurrence' => $occurrence,
+            'object_version_number' => 800,//static not changed
+            'creation_date' => DB::raw('SYSDATE'),
+            'created_by' => 8001,
+            'last_update_login' => -1,//static not changed
+            'last_updated_by' => 8001,
+            'last_update_date' => DB::raw('SYSDATE'),
+            'comments' => $comments,
+            'approval_status' => $status,
+            'time_start'=>$timePart_start_date,
+            'time_end'=>$timePart_end_date,
+            'absence_hours'=>$difference_hours,
+            'PREGNANCY_RELATED_ILLNESS' => (array_key_exists('ATTRIBUTE12', $additional_data)) ? $additional_data['ATTRIBUTE12'] : null,
+            'ACCEPT_LATE_NOTIFICATION_FLAG' => (array_key_exists('ATTRIBUTE12', $additional_data)) ? $additional_data['ATTRIBUTE12'] : null,
+            'attribute1' => $attribute1, // not colunm is reserved to proccessing time
+            "attribute2" => (array_key_exists('ATTRIBUTE2', $additional_data)) ? $additional_data['ATTRIBUTE2'] : null,
+            "attribute3" => (array_key_exists('ATTRIBUTE3', $additional_data)) ? $additional_data['ATTRIBUTE3'] : null,
+            "attribute4" => (array_key_exists('ATTRIBUTE4', $additional_data)) ? $additional_data['ATTRIBUTE4'] : null,
+            "attribute5" => (array_key_exists('ATTRIBUTE5', $additional_data)) ? $additional_data['ATTRIBUTE5'] : null,
+            "attribute6" => (array_key_exists('ATTRIBUTE6', $additional_data)) ? $additional_data['ATTRIBUTE6'] : null,
+            "attribute7" => (array_key_exists('ATTRIBUTE7', $additional_data)) ? $additional_data['ATTRIBUTE7'] : null,
+            "attribute8" => (array_key_exists('ATTRIBUTE8', $additional_data)) ? $additional_data['ATTRIBUTE8'] : null,
+            "attribute9" => (array_key_exists('ATTRIBUTE9', $additional_data)) ? $additional_data['ATTRIBUTE9'] : null,
+            "attribute10" => (array_key_exists('ATTRIBUTE10', $additional_data)) ? $additional_data['ATTRIBUTE10'] : null,
+            "attribute11" => (array_key_exists('ATTRIBUTE11', $additional_data)) ? $additional_data['ATTRIBUTE11'] : null,
+            "attribute12" => (array_key_exists('ATTRIBUTE12', $additional_data)) ? $additional_data['ATTRIBUTE12'] : null,
+            "attribute13" => (array_key_exists('ATTRIBUTE13', $additional_data)) ? $additional_data['ATTRIBUTE13'] : null,
+            "attribute14" => (array_key_exists('ATTRIBUTE14', $additional_data)) ? $additional_data['ATTRIBUTE14'] : null,
+            "attribute15" => (array_key_exists('ATTRIBUTE15', $additional_data)) ? $additional_data['ATTRIBUTE15'] : null,
+            "attribute16" => (array_key_exists('ATTRIBUTE16', $additional_data)) ? $additional_data['ATTRIBUTE16'] : null,
+            "attribute17" => (array_key_exists('ATTRIBUTE17', $additional_data)) ? $additional_data['ATTRIBUTE17'] : null,
+            "attribute18" => (array_key_exists('ATTRIBUTE18', $additional_data)) ? $additional_data['ATTRIBUTE18'] : null,
+            "attribute19" => (array_key_exists('ATTRIBUTE19', $additional_data)) ? $additional_data['ATTRIBUTE19'] : null,
+            "attribute20" => (array_key_exists('ATTRIBUTE20', $additional_data)) ? $additional_data['ATTRIBUTE20'] : null,
+        ]);
+
+    }
+
+
 }

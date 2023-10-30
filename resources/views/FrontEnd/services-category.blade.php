@@ -30,20 +30,22 @@
                     <div class="overflow-hidden">
 
                         <a
-                           @if($service['name']=="Absence Services")
-                            href="{{route('profile-employee',['status_request'=>'request_service'])}}">
-                            @elseif($service['name']=="Certificate Services")
-                                href="{{route('certificate-service',['status_request'=>'request_service'])}}">
-                            @elseif($service['name']=="Letter Services")
-                                href="{{route('letter-service',['status_request'=>'request_service'])}}">
-                            @elseif($service['name']=="Loan Services")
-                                href="{{route('loan-service',['status_request'=>'request_service'])}}">
-                            @elseif($service['name']=="Insurance")
-                                href="{{route('insurance-service',['status_request'=>'request_service'])}}">
-                            @elseif($service['name']=="Other")
-                                href="{{route('other-service',['status_request'=>'request_service'])}}">
+                           @if($service['name']==\App\Enums\AppKeysProps::Absence_Services()->value)
+                            href="{{route('profile-employee',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::Certificate_Services()->value)
+                                href="{{route('certificate-service',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::Letter_Services()->value)
+                                href="{{route('letter-service',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::Loan_Services()->value)
+                                href="{{route('loan-service',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::Insurance()->value)
+                                href="{{route('insurance-service',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::Other()->value)
+                                href="{{route('other-service',['status_request'=>'request_service'])}}"
+                            @elseif($service['name']==\App\Enums\AppKeysProps::EOS()->value)
+                                href="{{route('end-service',['status_request'=>'request_service'])}}"
                             @endif
-
+                        >
                             <img class="img-fluid" src="{{ asset("img/" . $service['image']) }}" alt="">
                         </a>
                     </div>

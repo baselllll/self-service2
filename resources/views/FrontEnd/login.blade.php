@@ -23,6 +23,16 @@
         </div>
         <br>
         <div class="container" id="login_container">
+            @if(isset($feature_new) and $feature_new->status=="Active")
+                <div class="hot-news section-title bg-white text-center text-danger px-3" id="hot-news">
+                    <div class="news-item">@if(isset($feature_new) and $feature_new->status=="Active")
+                            {!! nl2br($feature_new->title) !!}
+                            <br/>
+                            {!! nl2br($feature_new->description) !!}
+                        @endif</div>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="signin-image text-center" style="margin-top: 52px;">
@@ -103,10 +113,8 @@
             try {
                 var response = await $.ajax({
                     url: "{{ route('send-otp') }}",
-                    method: 'POST',
                     data: {
                         emp_number: emp_number,
-                        _token: "{{ csrf_token() }}"
                     }
                 });
 

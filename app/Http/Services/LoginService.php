@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Repository\EmployeeDetailsRepository;
 use App\Http\Repository\LoginRepository;
 use App\Http\Repository\MainOracleQueryRepo;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -225,6 +226,10 @@ class LoginService
     {
         return $this->detailsRepository->getAnnualApprovedForClearance();
     }
+    public function EOSiNSERTIONPROCESS($p_person_id,$eos_service,$actual_date,$transaction_id,$actualTerminationDate,$noticePeriodExemption,$deptRecovery)
+    {
+      $this->detailsRepository->EOSiNSERTIONPROCESS($p_person_id,$eos_service,$actual_date,$transaction_id,$actualTerminationDate,$noticePeriodExemption,$deptRecovery);
+    }
     public function delete_taswaya($transaction_id)
     {
         return $this->detailsRepository->delete_taswaya($transaction_id);
@@ -275,6 +280,13 @@ public function getRecordOfHRTransactionStep($transaction_id)
         return $this->detailsRepository->continueProcessAbsence($transaction_id_input);
     }
     public function xxajmiProceessCreate($transaction_id_input){
-        return $this->detailsRepository->XjmRecordProcess($transaction_id_input,null);
+        return $this->detailsRepository->XjmRecordProcess_manully($transaction_id_input,null);
     }
+    public function add_details_feature($data){
+        return $this->detailsRepository->add_details_feature($data);
+    }
+    public function feature_new(){
+        return $this->detailsRepository->feature_new();
+    }
+
 }

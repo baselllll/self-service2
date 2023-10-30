@@ -1072,3 +1072,29 @@ input[type="checkbox"]:checked + .checkbox-label::after {
 
 }
 
+.hot-news {
+    height: 49px;
+    overflow: hidden;
+    position: relative;
+    font-weight: bold;
+    width: 256px;
+}
+
+.news-item {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    animation: moveNews 5s infinite;
+}
+
+@keyframes moveNews {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+

@@ -27,11 +27,14 @@ use App\Http\Controllers\DashboardControllers\ProcessMainController;
 
 Route::get("send_test",function (){
     $sms = new \App\Helper\SmsVerifyHelper();
-    return $sms->sendSMS('966573447923',"wewe");
+     $sms->sendSMS('966573447923',"wewe");
+    return "success";
 })->name('not_allowed');
 
 Route::get("run_request_sms_service",function (){
-    \App\Jobs\SendSmsJob::dispatch();
+    $notify = new \App\Helper\NotifyMangerService();
+    $notify->handle();
+    return "success";
 })->name('not_allowed');
 
 Route::get("not-allowed",function (){
@@ -80,7 +83,7 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
     // that to do the logic of login that have more conditions to login  websites
     Route::post("login-auth",[LoginController::class,'Login'])->name('auth-login');
     // that to send otp to user in your phone and email also
-    Route::post("send-otp",[LoginController::class,'SendOtp'])->name('send-otp');
+    Route::get("send-otp",[LoginController::class,'SendOtp'])->name('send-otp');
 
 
     Route::group(['middleware' => 'employee.session'], function () {
@@ -91,14 +94,17 @@ Route::group(['middleware' => 'check.allowed.location'], function () {
         // that to get the Requests and know tracking the requests and know the status
         Route::get('home',[HomeController::class,'index'])->name('home');
         Route::get('clearance',[HomeController::class,'clearance'])->name('clearance');
+        Route::post('insert_eos',[HomeController::class,'insertEos'])->name('insert_eos');
         // that to get the tracking Requests using Transaction ID
         Route::get('get-details/{transaction_id}',[HomeController::class,'getDetails'])->name('get-details');
        //  that routes  show  the services available in system and also the Pending Requests for Manger and delegated person
         Route::get('profile-employee',[ProfileEmployeeController::class,'index'])->name('profile-employee');
+        Route::get('pending-employee',[ProfileEmployeeController::class,'pendingService'])->name('pending-employee');
 
         Route::get('services-category',[ProfileEmployeeController::class,'servicesCategory'])->name('services-category');
         Route::get('certificate-service',[ProfileEmployeeController::class,'certificateService'])->name('certificate-service');
         Route::get('loan-service',[ProfileEmployeeController::class,'loanService'])->name('loan-service');
+        Route::get('end-service',[ProfileEmployeeController::class,'endService'])->name('end-service');
         Route::get('get-attribute-special-service/{flex_id}/{service_type}/{main_service_request_sub}',[ProfileEmployeeController::class,'getAttributeSpecialService'])->name('get-attribute-special-service');
 
         Route::get('insurance-service',[ProfileEmployeeController::class,'InsuranceService'])->name('insurance-service');
@@ -150,6 +156,8 @@ Route::group(['prefix' => 'dashboard'],function (){
     Route::get("otp_different_device",[ProcessMainController::class,'otp_different_device'])->name('otp_different_device');
     Route::get("register_user",[ProcessMainController::class,'register_user'])->name('register_user');
     Route::get("tracking_r",[ProcessMainController::class,'tracking_r'])->name('tracking_r');
+    Route::get("feature_new",[ProcessMainController::class,'feature_new'])->name('feature_new');
+    Route::post("add_details_feature",[ProcessMainController::class,'add_details_feature'])->name('add_details_feature');
     Route::get("manual_add_absence",[ProcessMainController::class,'manual_add_absence'])->name('manual_add_absence');
 });
 

@@ -31,20 +31,23 @@
                         <input type="hidden" value="{{$main_service_request_sub}}" name="flex_name">
                         <input type="hidden" value="{{$flex_id}}" name="flex_id">
                         <div class="row g-3">
-                            @foreach($loan_attr as $input_item)
+                            @foreach($service_attri as $input_item)
+
                                 @php
-                                    $segmentPlaceholder = app()->getLocale() == 'en' ? "Enter $input_item->segment_name" : "ادخل $input_item->ar_segment_name";
+                                    $segmentPlaceholder = app()->getLocale() == 'en' ? "Enter $input_item->segment_name" : "ادخل $input_item->ar_text";
                                 @endphp
 
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="@if(str_contains($input_item->segment_name,'Date')){{ trim('date') }}@else{{ trim('text') }}@endif
-" class="form-control" name="{{$input_item->segment_name}}" id="{{$input_item->segment_name}}" placeholder="{{$segmentPlaceholder}}">
+                                        <input type="{{$input_item->type}}" class="form-control" name="{{$input_item->segment_name}}" id="{{$input_item->segment_name}}" placeholder="{{$segmentPlaceholder}}">
+
                                         <label for="{{$segmentPlaceholder}}">{{$segmentPlaceholder}}</label>
                                     </div>
                                     <br/>
                                 </div>
                             @endforeach
+
+
                             <div class="row g-2">
                                 <div class="col-4"></div>
                                 <div class="col-4">

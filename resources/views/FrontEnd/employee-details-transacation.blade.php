@@ -33,8 +33,7 @@
         <div class="col-12">
             @if(($custom_details_employee->no_of_approvals=="3" and $custom_details_employee->approval_status=="Approved") or ($custom_details_employee->no_of_approvals=="2" and $custom_details_employee->approval_status=="Admin Mgr Approved"))
                 <div class="container mt-3">
-{{--                    <a href="{{ route('generate-pdf',['transaction_id'=>$custom_details_employee->transaction_id]) }}" class="btn btn-primary">Go To Print</a>--}}
-                </div>
+            </div>
                 <br/>
             @endif
 
@@ -71,18 +70,34 @@
                     <h6 class="alert alert-danger" style="width: 165px;height: 45px;margin-top: -26px;">Request Details</h6>
                     <div class="row" >
                         <div class="col-4">
+
                             <span>@lang("messages.Transaction ID"):</span><span>{{$custom_details_employee->transaction_id}}</span><br/>
                             <span>@lang("messages.AbsenceType"):</span><span>{{$custom_details_employee->absence_type}}</span><br/>
-                            <span>@lang("messages.StartDate"):</span><span>{{$custom_details_employee->absence_start_date}}  {{$custom_details_employee->time_start}}</span><br/>
-                            <span>@lang("messages.EndDate"):</span><span>{{$custom_details_employee->absence_end_date}}  {{$custom_details_employee->time_end}}</span><br/>
+                            <span>@lang("messages.CreationDate"):</span><span>{{\Carbon\Carbon::parse($custom_details_employee->creation_date)->format('Y-m-d')}}</span><br/>
+
+                             @if($custom_details_employee->service_type=="absence")
+                                <span>@lang("messages.StartDate"):</span><span>{{$custom_details_employee->absence_start_date}}  {{$custom_details_employee->time_start}}</span><br/>
+                                <span>@lang("messages.EndDate"):</span><span>{{$custom_details_employee->absence_end_date}}  {{$custom_details_employee->time_end}}</span><br/>
+                            @elseif($custom_details_employee->service_type=="eos")
+
+                                <span>@lang("messages.resignation_reason"):</span><span>{{$custom_details_employee->resignation_reason}}</span><br/>
+                                <span>@lang("messages.notified_eos_date"):</span><span>{{\Carbon\Carbon::parse($custom_details_employee->notified_eos_date)->format('Y-m-d')}}</span><br/>
+                                <span>@lang("messages.actual_eos_date"):</span><span>{{\Carbon\Carbon::parse($custom_details_employee->actual_eos_date)->format('Y-m-d')}}</span><br/>
+
+                            @endif
+                        </div>
+                        <div class="col-4">
+
+                            <span>@lang("messages.Requested To"):</span><span>{{explode(' ',$custom_details_employee->approver)[0]}}</span><br/>
+                            <span>@lang("messages.Requested By"):</span><span>{{explode(' ',$custom_details_employee->requestor)[0]}}</span><br/>
 
                         </div>
                         <div class="col-4">
-                            <span>@lang("messages.Requested To"):</span><span>{{explode(' ',$custom_details_employee->approver)[0]}}</span><br/>
-                            <span>@lang("messages.Requested By"):</span><span>{{explode(' ',$custom_details_employee->requestor)[0]}}</span><br/>
-                        </div>
-                        <div class="col-4">
                             <span>@lang("messages.Replacement Number"):</span><span>({{$custom_details_employee->replacement_no}} - {{explode(' ',$custom_details_employee->replacement_name)[0]}})</span><br/>
+                            @if($custom_details_employee->service_type=="eos")
+                                <span>@lang("messages.eos_taswiah_status"):</span><span>@if($custom_details_employee->eos_taswiah_status=="1") Confirmed @else @endif</span><br/>
+                                <span>@lang("messages.eos_clearance_status"):</span><span>{{$custom_details_employee->eos_clearance_status}}</span><br/>
+                            @endif
                         </div>
                     </div>
                 </div>

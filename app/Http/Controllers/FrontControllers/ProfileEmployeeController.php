@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\FrontControllers;
 
 use App\Enums\AppKeysProps;
+use App\Helper\EosDetails;
 use App\Helper\SpecialSpecifService;
 use App\Http\Controllers\BackEndControllers\LoginController;
 use App\Http\Controllers\Controller;
@@ -35,6 +36,36 @@ class ProfileEmployeeController extends Controller
         $this->Manger= AppKeysProps::Manger()->value;
     }
 
+    public function pendingService(Request $request){
+
+
+        $status_request_pending = $request->status_request_pending;
+        $requested_notification = json_decode($request->requested_notification);
+
+        $toggle_unauthorized_annual = $request->toggle_unauthorized_annual;
+        $special_type_user_default = $request->special_type_user_default;
+        $last_requested_to_play_notify = json_decode($request->last_requested_to_play_notify);
+        $getAllPendingDifferent =json_decode( $request->getAllPendingDifferent);
+        $employee = json_decode($request->employee);
+        $all_services = json_decode($request->all_services);
+        $absence_requests = json_decode($request->absence_requests);
+        $user_type = $request->user_type;
+        $specail_services = json_decode($request->specail_services);
+
+
+
+        return view('frontend.pending-employee',compact('status_request_pending',
+            'requested_notification',
+            'toggle_unauthorized_annual',
+            'special_type_user_default',
+            'last_requested_to_play_notify',
+            'getAllPendingDifferent',
+            'employee',
+            'all_services',
+            'absence_requests',
+            'user_type',
+            'specail_services'));
+    }
     public function index(Request $request){
 
 
@@ -43,6 +74,7 @@ class ProfileEmployeeController extends Controller
         $employee = session()->get('employee');
         $special_type_user_default = session()->get('special_type_user_default');
         $this->loginService->updateOnPerPeople($employee->person_id);
+        $getAllPendingDifferent = $this->specialSpecifhelper->GetAllPendingDifferent();
         $status_request = $request->status_request;
         if(!isset($employee)){
             $login_service = App::make(LoginController::class);
@@ -240,7 +272,8 @@ class ProfileEmployeeController extends Controller
         });
 
         $requested_notification = array_values($filtered_notifications);
-        return view('frontend.profile-employee',compact('toggle_unauthorized_annual','special_type_user_default','last_requested_to_play_notify','requested_notification','status_request','user_type','absence_requests','employee','all_services','specail_services'));
+
+        return view('frontend.profile-employee',compact('getAllPendingDifferent','toggle_unauthorized_annual','special_type_user_default','last_requested_to_play_notify','requested_notification','status_request','user_type','absence_requests','employee','all_services','specail_services'));
     }
 
     public function servicesCategory(){
@@ -258,6 +291,13 @@ class ProfileEmployeeController extends Controller
 
     }
     public function certificateService(){}
+    public function endService(){
+        $eos = new EosDetails();
+        $get_eos =  $eos->GetEOSSerivices();
+        $get_eos =  json_encode($get_eos);
+        $get_eos =  json_decode($get_eos);
+        return view('frontend.services-sub_category',compact('get_eos'));
+    }
     public function loanService(){
         $loan_services =  $this->mangerLogicService->LoanServices();
         foreach ($loan_services as $item){
@@ -266,24 +306,34 @@ class ProfileEmployeeController extends Controller
         return view('frontend.services-sub_category',compact('loan_services'));
     }
     public function getAttributeSpecialService($flex_id,$service_type,$main_service_request_sub){
-        $loan_attr =  $this->mangerLogicService->get_LoanRequest_service($flex_id);
+        $service_attri = null;
+        $eos = new EosDetails();
+        if ($service_type=="EOS"){
+            $eos =  $eos->GetEOSAttr();
+            $eos =  json_encode($eos);
+            $eos =  json_decode($eos);
+            $service_attri = $eos;
 
 
-// Translation array for segment_name
-        $segmentTranslations = [
-            "Bank Name" => "اسم البنك",
-            "Loan Date" => "تاريخ القرض",
-            "Issued Document" => "المستند المصدر",
-            "Clearance Document from Bank" => "مستند التصفية من البنك",
-            "Notes" => "ملاحظات"
-        ];
-
-        foreach ($loan_attr as $item) {
-            if (isset($segmentTranslations[$item->segment_name])) {
-                $item->ar_segment_name = $segmentTranslations[$item->segment_name];
-            }
         }
-        return view('frontend.services-sub_category_attribute',compact('loan_attr','service_type','flex_id','main_service_request_sub'));
+//        $loan_attr =  $this->mangerLogicService->get_LoanRequest_service($flex_id);
+
+
+//// Translation array for segment_name
+//        $segmentTranslations = [
+//            "Bank Name" => "اسم البنك",
+//            "Loan Date" => "تاريخ القرض",
+//            "Issued Document" => "المستند المصدر",
+//            "Clearance Document from Bank" => "مستند التصفية من البنك",
+//            "Notes" => "ملاحظات"
+//        ];
+//
+//        foreach ($loan_attr as $item) {
+//            if (isset($segmentTranslations[$item->segment_name])) {
+//                $item->ar_segment_name = $segmentTranslations[$item->segment_name];
+//            }
+//        }
+        return view('frontend.services-sub_category_attribute',compact('service_attri','service_type','flex_id','main_service_request_sub'));
     }
 
 

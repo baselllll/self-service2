@@ -6,6 +6,7 @@ use App\Helper\DashboardHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Repository\MainOracleQueryRepo;
 use App\Http\Services\LoginService;
+use Illuminate\Http\Request;
 
 class ProcessMainController extends Controller
 {
@@ -43,6 +44,15 @@ class ProcessMainController extends Controller
     }
     public function manual_add_absence(){
         return view('dashboard.manual_add_absence');
+    }
+    public function feature_new(){
+        $feature_new = $this->loginService->feature_new();
+        return view('dashboard.feature_new',compact('feature_new'));
+    }
+    public function add_details_feature(Request $request){
+        $add_details_feature = $this->loginService->add_details_feature($request->all());
+        return response()->json(['results'=>"success added or changed new feature"]);
+
     }
 
     public function tracking_r(){

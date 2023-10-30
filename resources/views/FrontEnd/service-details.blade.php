@@ -219,30 +219,6 @@
             }
         });
 
-        {{--$('#end_date_unathorized_input_date').change(function () {--}}
-        {{--    var end_date_unathorized_input_date = new Date($('#end_date_unathorized_input_date').val());--}}
-        {{--    var start_date_unathorized_input_date = new Date($('#start_date_unathorized_input_date').val());--}}
-
-        {{--    if (end_date_unathorized_input_date <= start_date_unathorized_input_date) {--}}
-        {{--        // End date is not greater than start date--}}
-        {{--        alert('End date must be greater than start date.');--}}
-        {{--        // $('#end_date_unathorized_input input').val(start_date_unathorized_input_date.toISOString().substring(0, 10))--}}
-        {{--        $('#end_date_unathorized_input input').val(end_date.toISOString().substring(0, 10))--}}
-        {{--    }else{--}}
-        {{--        var difference = end_date_unathorized_input_date.getTime() - start_date_unathorized_input_date.getTime();--}}
-        {{--        var differenceInDays = difference / (1000 * 3600 * 24) + 1;--}}
-        {{--        $('#end_date_unathorized_input input').val(end_date.toISOString().substring(0, 10))--}}
-        {{--        $('#get_difference_date_unauthorized_span').text(differenceInDays + "  {{__('messages.days')}}");--}}
-
-        {{--        var total_unauthorized = $('#get_difference_date_unauthorized_span').text();--}}
-        {{--        var total_annual = $('#get_difference_date').text();--}}
-        {{--        var total = parseInt(total_unauthorized) + parseInt(total_annual);--}}
-
-        {{--        $('#total_annual_unauthorized').text(total + "  {{__('messages.days')}}");--}}
-        {{--    }--}}
-
-
-        {{--});--}}
 
         $('#start_date , #end_date').change(async function() {
             var start_date = new Date($('#start_date').val());
@@ -346,7 +322,28 @@
 </script>
 @if(isset($absence_attendance_type_id))
 
-    @if( $absence_attendance_type_id == \App\Enums\AppKeysProps::Sickleave_absence_type_id()->value)
+    @if( $absence_attendance_type_id == \App\Enums\AppKeysProps::Sickleave_absence_type_id()->value )
+    @elseif(  $absence_attendance_type_id == \App\Enums\AppKeysProps::Emergency_absence_type_id()->value)
+        <script>
+            var inputs = document.querySelectorAll('input[type="date"]');
+            var inputs2 = document.querySelectorAll('input[type="datetime-local"]');
+
+            var today = new Date();
+            today.setDate(today.getDate() - 2); // Subtract 2 days
+
+            var minDate = today.toISOString().split('T')[0];
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].setAttribute('min', minDate);
+            }
+
+            for (var j = 0; j < inputs2.length; j++) {
+                // Set the minimum value to the current date in Riyadh without time
+                var riyadhDate = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Riyadh" }));
+                var riyadhDateISO = riyadhDate.toISOString().split('T')[0];
+                inputs2[j].setAttribute('min', riyadhDateISO);
+            }
+        </script>
     @else
         <script>
             document.addEventListener('DOMContentLoaded', function() {

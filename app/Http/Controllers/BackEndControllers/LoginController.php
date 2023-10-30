@@ -184,11 +184,12 @@ class LoginController extends Controller
     public function index(){
         $user_type =  session()->get('user_type');
         $employee = session()->get('employee');
+        $feature_new = $this->loginService->feature_new();
         if(isset(session()->get('employee')->person_id)){
             Alert::success("SUCCESS",__('messages.logined_now'));
             return redirect('home');
         }
-        return view('frontend.login');
+        return view('frontend.login',compact('feature_new'));
     }
     public function send_otp_for_check_before(Request $request){
         $currentDateTime = Carbon::now();
@@ -373,6 +374,7 @@ class LoginController extends Controller
             }
             $otp = $randomNumbers;
             $result = $this->loginService->SendOtpService($otp,$person_id,$employee_number,$employee);
+
             //more validation emp have phone or email or existEmp
             if ($result == 'device_is_opend') {
                 return response()->json([
@@ -441,9 +443,12 @@ class LoginController extends Controller
             $requested_notification =  $this->mangerLogicService->GetnotificationOfManger($employee->person_id);
         }else{
             $requested_notification =  $this->mangerLogicService->GetnotificationOfEmployee($employee->employee_number);
-
         }
-        return view('frontend.employee-information',compact('employee','requested_notification'));
+        $cost_center = $this->mangerLogicService->GetReplacmentDetailsSpecificDepartment($employee->person_id)[0]->cost_center;
+        $employee_more_details = $this->mangerLogicService->GetPhoneEmpFromPersonId($employee->person_id)[0];
+
+        return view('frontend.employee-information',compact('employee','cost_center','employee_more_details','requested_notification'));
+
     }
 
 
@@ -660,14 +665,13 @@ class LoginController extends Controller
                 ($get_details_trnx->no_of_approvals == "2" && $get_details_trnx->approval_status == AppKeysProps::AdminMgrApproved()->value) ||
                 ($get_details_trnx->no_of_approvals == "3" && $get_details_trnx->approval_status == AppKeysProps::TopManger_Approved()->value)
             ) {
-                $check_created_absence = $this->loginService->continueProcessAbsence($transaction_id_input)->created_absence;
-
-                if ($check_created_absence == "N") {
+                if ($get_details_trnx->abs_ins_status == "N") {
                     $this->loginService->xxajmiProceessCreate($transaction_id_input);
                     return response()->json(['results' => "absence successfully added"]);
                 }
             }
         } catch (\Exception $exception) {
+
             return response()->json(['results' => "failed added absence"]);
         }
 

@@ -43,11 +43,17 @@ class DetailsEmployeeService
     }
     public  function InsertDataInAbsenceTable($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName=null){
         try {
-              $this->detailsRepository->InsertTransctionProcessWorkFlow($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName);
+           $this->detailsRepository->InsertTransctionProcessWorkFlow($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName);
         }catch (\Exception $exception){
             return $exception->getMessage();
         }
-
+    }
+    public  function InsertTransctionProcessWorkFlow_Special($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName=null,$service_type=null,$data_feilds=null){
+        try {
+           $this->detailsRepository->InsertTransctionProcessWorkFlow_Special($person_id,$employee_number,$date_start,$date_end,$absence_type,$absence_type_id,$comments,$replaced_employee,$timePart_start_date,$timePart_end_date,$difference_hours,$fileName,$service_type,$data_feilds);
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
     }
     public function GetSegmentsOfSpecifTemplate($template_id){
         return $this->detailsRepository->GetSegmentsOfSpecifTemplate($template_id);

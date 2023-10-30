@@ -117,6 +117,21 @@ class HomeController extends Controller
     }
     public function clearance(Request $request){
         $clearance_initialed = $this->loginService->getAnnualApprovedForClearance();
+
         return view('frontend.clearance',compact("clearance_initialed"));
+    }
+    public function insertEos(Request $request){
+        $eos_record = $this->loginService->GetDetailsOfCustom($request->transaction_id);
+        $p_person_id = $this->loginService->GetPersonID($eos_record->empno)->person_id;
+        $eos_service = $eos_record->absence_type;
+        $transaction_id = $eos_record->transaction_id;
+        $actual_date = $eos_record->actual_eos_date;
+        $actualTerminationDate = $request->actualTerminationDate;
+        $deptRecovery = $request->deptRecovery;
+        $noticePeriodExemption = $request->noticePeriodExemption;
+        $actual_date = $eos_record->actual_eos_date;
+        $this->loginService->EOSiNSERTIONPROCESS($p_person_id,$eos_service,$actual_date,$transaction_id,$actualTerminationDate,$noticePeriodExemption,$deptRecovery);
+        Alert::success('SUCCESS',__('messages.mr_Approve'));
+        return back();
     }
 }

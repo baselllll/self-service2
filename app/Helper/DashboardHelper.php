@@ -15,6 +15,7 @@ class DashboardHelper
             ["image"=>"register_user.png","url"=>"register_user","name"=>"Register Users"],
             ["image"=>"tracking_r.jpg","url"=>"tracking_r","name"=>"Tracking Requests"],
             ["image"=>"continue_process.png","url"=>"manual_add_absence","name"=>"Insert Absence"],
+            ["image"=>"feature_new.png","url"=>"feature_new","name"=>"New Feature"],
         ];
     }
 

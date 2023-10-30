@@ -22,6 +22,7 @@
  $Mgr_approved_pending_req= \App\Enums\AppKeysProps::Mgr_approved_pending_req()->value;
  $accrued_balance= new \App\Http\Repository\MainOracleQueryRepo();
  @endphp
+
 @include('includes._navbar',['requested_notification' => $requested_notification])
 
 
@@ -29,111 +30,53 @@
 <div class="container-xxl py-5">
 
     <div class="row">
-        @if($status_request=="request_service")
-            <div class="col-12">
-                <div class="row">
-                    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                        <h6 class="section-title bg-white text-center text-primary px-3">@lang('messages.Services') </h6>
-                        <h1 class="mb-5">@lang('messages.Absence Services')</h1>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6"></div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-2">
-                            <div class="input-group mb-3">
-                                <input type="text" id="service-filter" class="form-control" placeholder="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="col-12">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="section-title bg-white text-center text-primary px-3">@lang('messages.Notify') </h6>
+                <h1 class="mb-5">@lang('messages.leaveNotify') </h1>
+            </div>
+        <div class="col-12" style="overflow: scroll;">
+            <table id="tablerow_structure" class="table table-striped bg-dark" >
+                <thead style="background:#1dafbd;color: white">
+                <tr>
 
-                @foreach($all_services as $service)
-                        <div class="col-lg-3 col-md-6 wow fadeInUp service-card" data-wow-delay="0.1s">
-                            <div class="team-item bg-light">
-                                <div class="overflow-hidden">
-                                    <a href="{{route("service-details",['service_type'=>'Absence','absence_attendance_type_id'=>$service->absence_attendance_type_id,'name'=>$service->name])}}">
-                                        <img class="img-fluid" src="{{asset("img/$service->image")}}" alt=""></a>
-                                </div>
+                    <th scope="col">@lang('messages.AbsenceType') </th>
+                    <th scope="col">@lang('messages.mr_EmployeeNumber') </th>
+                    <th scope="col">@lang('messages.mr_EmployeeName') </th>
+                    @if($status_request_pending=="absence")
 
-                                <div class="text-center p-4">
-                                    <h5 class="mb-0"> @lang('messages.' . $service->name)</h5>
-                                </div>
-                            </div>
-                        </div>
+                        <th scope="col">@lang('messages.mr_StartDate') </th>
+                        <th scope="col">@lang('messages.mr_EndDate') </th>
+                        <th scope="col">@lang('messages.mr_Hours') </th>
+                    @elseif($status_request_pending=="eos")
+
+                        <th scope="col">@lang('messages.notified_eos_date') </th>
+                        <th scope="col">@lang('messages.actual_eos_date') </th>
+                        <th scope="col">@lang('messages.notice_period_days') </th>
+                    @endif
+                    <th scope="col">@lang('messages.mr_Status') </th>
+
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody style="color: black">
+                    @if($status_request_pending=="absence")
+                          @foreach($requested_notification as $item)
+                        @if($item->service_type=="absence")
+                            @include('modules.absence')
+                        @endif
+
                     @endforeach
-                </div>
-            </div>
-        @else
-            <div class="col-12">
-                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <h6 class="section-title bg-white text-center text-primary px-3">@lang('messages.Absence_pending') </h6>
-                </div>
-                <div class="row">
-                    <div class="col-12" style="overflow: scroll;">
-                        <table id="tablerow_structure" class="table table-striped bg-dark" >
-                            <thead style="background:#1dafbd;color: white">
-                            <tr>
-                                <th scope="col">@lang('messages.mr_ServiceName') </th>
-                                <th scope="col">@lang('messages.mr_EmployeeNumber') </th>
-                                <th scope="col">@lang('messages.mr_EmployeeName') </th>
-                                <th scope="col">@lang('messages.mr_StartDate') </th>
-                                <th scope="col">@lang('messages.mr_EndDate') </th>
-                                <th scope="col">@lang('messages.mr_Hours') </th>
-                                <th scope="col">@lang('messages.mr_Status') </th>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody style="color: black">
-                            @foreach($requested_notification as $item)
-                                @if($item->service_type=="absence")
-                                    @include('modules.absence')
-                                @endif
 
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <h6 class="section-title bg-white text-center text-primary px-3">@lang('messages.EOS_pending')</h6>
-                </div>
-                <div class="row">
-                    <div class="col-12" style="overflow: scroll;">
-                        <table id="tablerow_structure" class="table table-striped bg-dark" >
-                            <thead style="background:#1dafbd;color: white">
-                            <tr>
-
-                                <th scope="col">@lang('messages.mr_ServiceName') </th>
-                                <th scope="col">@lang('messages.mr_EmployeeNumber') </th>
-                                <th scope="col">@lang('messages.mr_EmployeeName') </th>
-                                <th scope="col">@lang("messages.notified_eos_date") </th>
-                                <th scope="col">@lang("messages.actual_eos_date") </th>
-                                <th scope="col">@lang("messages.notice_period_days") </th>
-                                <th scope="col">@lang('messages.mr_Status') </th>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody style="color: black">
-                            @foreach($requested_notification as $item)
-                                @if($item->service_type=="eos")
-                                    @include('modules.eos')
-                                @endif
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-
-{{--           @include('FrontEnd.pending-service',['getAllPendingDifferent'=>$getAllPendingDifferent])--}}
-        @endif
+                   @elseif($status_request_pending=="eos")
+                    @foreach($requested_notification as $item)
+                        @if($item->service_type=="eos")
+                            @include('modules.eos')
+                        @endif
+                    @endforeach
+                   @endif
+                </tbody>
+            </table>
     </div>
 </div>
 
